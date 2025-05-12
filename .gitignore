@@ -1,0 +1,21 @@
+#Bytecode-Dateien
+__pycache__/
+*.pyc
+
+#Virtuelle Umgebungen
+venv/
+env/
+
+#IDE-Dateien
+.vscode/
+.idea/
+
+#Systemdateien
+.DS_Store
+Thumbs.db
+
+#Datenbanken
+*.sqlite3
+
+#Umgebungsvariablen
+.env
