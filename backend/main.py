@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 import sqlite3
-
+from pydantic import BaseModel
 #Pydantic-Modell importieren
 from backend.schemas import ChatEintrag
 
@@ -40,3 +40,10 @@ def neuer_chat_eintrag(eintrag: ChatEintrag):
     connection.commit()
     connection.close() 
     return {"status": "Eintrag gespeichert"} #Nachricht zurückgeben
+
+class ChatRequest(BaseModel):
+    message: str
+
+@app.post("/chat")
+async def chat(request: ChatRequest):
+    return {"response": "Dies ist eine Platzhalterantwort vom KI-Agenten."}
