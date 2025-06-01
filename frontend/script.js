@@ -15,7 +15,7 @@ window.onload = () => {
       appendMessage("user", text);
       input.value = "";
 
-      // Simulierte KI-Antwort (Platzhalter)
+      // KI-Antwort (Platzhalter)
       setTimeout(() => {
         appendMessage("ki", "Danke für deine Nachricht! (Platzhalter)");
       }, 500);
