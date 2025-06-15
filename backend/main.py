@@ -3,6 +3,7 @@ import sqlite3
 from pydantic import BaseModel
 #Pydantic-Modell importieren
 from backend.schemas import ChatEintrag
+from backend.llm_utils import generiere_antwort
 
 app = FastAPI()
 
@@ -44,6 +45,8 @@ def neuer_chat_eintrag(eintrag: ChatEintrag):
 class ChatRequest(BaseModel):
     message: str
 
+#Antwort vom LLM generieren
 @app.post("/chat")
 async def chat(request: ChatRequest):
-    return {"response": "Dies ist eine Platzhalterantwort vom KI-Agenten."}
+    antwort = generiere_antwort(request.message) 
+    return {"response": antwort}
