@@ -1,11 +1,11 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import Optional
 
-#Definiert die Struktur der Chatdaten
+# Modell für einen Chat-Eintrag – wird im Endpunkt /eintrag verwendet
 class ChatEintrag(BaseModel):
-    id: Optional[int]
-    benutzer: str
-    nachricht: str
-    timestamp: Optional[str]
+    id: Optional[int] = None  # optional, wird von der Datenbank gesetzt
 
- #Hinweis: Dieses Modell ist keine echte Datenbankstruktur, sondern dient nur zur Datenprüfung & Kommunikation über die API
+    benutzer: str = Field(..., min_length=1, description="Benutzer darf nicht leer sein")
+    nachricht: str = Field(..., min_length=1, description="Nachricht darf nicht leer sein")
+
+    timestamp: Optional[str] = None  # darf leer bleiben
