@@ -2,7 +2,7 @@ from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 import sqlite3
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 #Pydantic-Modell importieren
 from backend.schemas import ChatEintrag
 
