@@ -2,8 +2,9 @@ from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 import sqlite3
-from .schemas import ChatEintrag
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
+#Pydantic-Modell importieren
+from backend.schemas import ChatEintrag
 
 app = FastAPI()
 
@@ -57,7 +58,9 @@ def neuer_chat_eintrag(eintrag: ChatEintrag):
     connection.close()
     return {"status": "Eintrag gespeichert"}
 
-# Dummy-Antwort für /chat
+class ChatRequest(BaseModel):
+    message: str
+
 @app.post("/chat")
 async def chat(request: ChatRequest):
-    return {"response": f"KI-Antwort auf: {request.message}"}
+    return {"response": "Dies ist eine Platzhalterantwort vom KI-Agenten."}
