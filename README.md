@@ -17,9 +17,10 @@ Ziel ist die Entwicklung eines intelligenten KI-gestützten Assistenzsystems, da
 7. [Technologiestack](#technologiestack)
 8. [Installation](#installation)
 9. [Verwendung](#verwendung)
-10. [Verwertungsplan](#verwertungsplan)
-11. [Lizenz](#lizenz)
-12. [Kontakt](#kontakt)
+10. [API-Endpunkte & Beispielanfragen](#api-endpunkte--beispielanfragen) 
+11. [Verwertungsplan](#verwertungsplan)
+12. [Lizenz](#lizenz)
+13. [Kontakt](#kontakt)
 
 ---
 
@@ -142,6 +143,56 @@ git clone https://gitlab.rz.htw-berlin.de/softwareentwicklungsprojekt/sose2025/t
 
 ## Verwendung
 Öffnen Sie einen Webbrowser und rufen Sie http://localhost:8000 auf. Dort können Sie über die Chat-Oberfläche mit dem KI-Agenten interagieren, Einsatzpläne erstellen und verwalten. Das System analysiert Eingaben, prüft auf Konflikte und gibt passende Vorschläge aus.
+
+---
+
+## API-Endpunkte & Beispielanfragen
+### GET /
+**Antwort**:  
+```
+{  
+  "message": "KI-Agent läuft"  
+}  
+```
+### POST /eintrag 
+Beschreibung: Speichert einen neuen Chatverlaufseintrag in der Datenbank.  
+
+**Beispielanfrage:**
+```json
+{  
+  "benutzer": "Kai",  
+  "nachricht": "Bitte plane mich für Dienstag ein",  
+  "timestamp": "2025-06-21 14:00:00"
+} 
+```
+
+**Antwort:**
+```
+{  
+  "status": "Eintrag gespeichert"  
+}
+```
+### POST /chat
+Beschreibung: Sendet eine Chat-Nachricht und erhält eine Antwort vom KI-Agenten.
+
+**Beispielanfrage:**
+
+```
+{  
+  "message": "Wer ist morgen verfügbar?"  
+}
+```
+**Antwort:**
+```
+{  
+  "response": "Dies ist eine Platzhalterantwort vom KI-Agenten."  
+}
+```
+
+### API-Dokumentation (Swagger UI):
+Die vollständige automatisch generierte API-Dokumentation ist unter http://localhost:8000/docs verfügbar.
+
+
 
 ---
 
