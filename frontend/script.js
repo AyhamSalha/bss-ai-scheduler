@@ -70,3 +70,5 @@ function appendMessage(sender, text) {
 function formatAntwort(text) {
   return text.replace(/\n/g, "<br>");
 }
+
+// Ende von script.js

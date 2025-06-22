@@ -4,6 +4,10 @@ body {
     font-family: Arial, sans-serif;
   }
   
+  /* Chat Toggle Button 
+  Dies ist der Button, der die Chatbox öffnet und schließt.
+  Er ist immer sichtbar, wenn der Benutzer die Seite besucht.
+  */
   .chat-toggle {
     position: fixed;
     bottom: 20px;
@@ -15,7 +19,10 @@ body {
     cursor: pointer;
     z-index: 1000;
   }
-  
+
+  /* Chat Toggle Button Image
+  Dies ist das Bild im Chat Toggle Button.
+  */
   .chat-toggle img {
   width: 100%;
   height: 100%;
@@ -23,7 +30,9 @@ body {
   object-fit: cover;
   }
 
-  
+  /* Chatbox
+  Dies ist die Chatbox, die erscheint, wenn der Benutzer auf den Chat Toggle Button klickt.
+  */
   .chatbox {
     position: fixed;
     bottom: 90px;
@@ -40,27 +49,38 @@ body {
     border-left: 10px solid #475258;
     border-right: 10px solid #475258;
   } 
-  
+
+  /* Chatbox Header
+  Dies ist der Header der Chatbox, der den Titel anzeigt.
+  */
   .chat-header {
     background: #475258;
     padding: 8px;
     font-weight: bold;
     text-align: center;
   }
-  
+
+  /* Chat Messages
+  Dies ist der Bereich, in dem die Chatnachrichten angezeigt werden.
+  */
   .chat-messages {
     padding: 10px;
     height: 300px;
     overflow-y: auto;
     background: #232A32;
   }
-  
+
+  /* Chat Footer
+  Dies ist der Footer der Chatbox, in dem der Benutzer Nachrichten eingeben kann.
+  */
   .chat-footer {    
     display: flex;
     padding: 10px;
     background: #475258;
   }
-  
+  /* Chat Footer Input
+  Dies ist das Eingabefeld im Footer der Chatbox, in dem der Benutzer Nachrichten eingeben kann.
+  */
   .chat-footer input {
     flex: 1;
     padding: 5px;
@@ -69,6 +89,9 @@ body {
     background-color: #C4E6FC;
   }
   
+  /* Chat Footer Button
+  Dies ist der Button im Footer der Chatbox, mit dem der Benutzer Nachrichten senden kann. 
+  */
   .chat-footer button {
     margin-left: 5px;
     padding: 8px 12px;
@@ -78,7 +101,10 @@ body {
     border-radius: 5px;
     cursor: pointer;
   }
-  
+
+  /* Chat Message
+  Dies ist die Klasse für die Chatnachrichten.
+  */
   .chat-message {
   padding: 8px 10px;
   margin: 5px 0;
@@ -87,6 +113,9 @@ body {
   word-wrap: break-word;
   }
 
+/* Chat Message User
+  Dies ist die Klasse für die Chatnachrichten des Benutzers.
+*/
 .chat-message.user {
   background-color: #C4E6FC;
   align-self: flex-end;
@@ -95,6 +124,9 @@ body {
   color: #000;
   }
 
+/* Chat Message KI
+  Dies ist die Klasse für die Chatnachrichten der KI.
+*/
 .chat-message.ki {
   background-color: #C4E6FC;
   align-self: flex-start;
@@ -102,6 +134,10 @@ body {
   color: #000;
   }
 
+/* Chat Messages Scrollbar
+  Dies ist die Klasse für die Scrollbar im Chatnachrichtenbereich.
+  Sie wird nur angezeigt, wenn der Benutzer scrollt.
+*/
 .chat-messages {
   display: flex;
   flex-direction: column;
@@ -111,10 +147,16 @@ body {
   scrollbar-width: thin;
   }
 
+  /* Chat Messages Scrollbar für Webkit-Browser
+  Dies ist die Klasse für die Scrollbar im Chatnachrichtenbereich für Webkit-Browser
+  */
 .chat-messages::-webkit-scrollbar {
   width: 6px;
   }
 
+  /* Chat Messages Scrollbar Track
+  Dies ist die Klasse für die Scrollbar Track im Chatnachrichtenbereich.
+  */
 .chat-messages::-webkit-scrollbar-thumb {
   background-color: #555;
   border-radius: 4px;
