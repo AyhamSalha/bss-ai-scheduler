@@ -52,6 +52,14 @@ window.onload = () => {
       }
     }
   });
+
+  // Beim Drücken der Enter-Taste die Nachricht senden
+  input.addEventListener("keypress", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      button.click();
+    }
+  });
 };
 // Funktion zum Anhängen einer Nachricht an das Chatfenster
 function appendMessage(sender, text) {
