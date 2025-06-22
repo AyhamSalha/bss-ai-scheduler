@@ -1,5 +1,5 @@
 body {
-    background-color: white;
+    background-color: rgb(153, 153, 153);
     margin: 0;
     font-family: Arial, sans-serif;
   }
@@ -184,5 +184,13 @@ body {
   background-color: #555;
   border-radius: 4px;
   }
+
+  /* Zeitstempel neben jeder Nachricht */
+  .timestamp {
+  font-size: 0.7em;
+  color: #888;
+  margin-top: 4px;
+  text-align: right;
+}
 
   /* Ende von CSS-Datei */

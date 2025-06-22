@@ -66,7 +66,11 @@ function appendMessage(sender, text) {
   const msgBox = document.getElementById("chat-messages");
   const msg = document.createElement("div");
   msg.classList.add("chat-message", sender);
-  msg.innerHTML = text;
+
+  // Aktuelle Uhrzeit im Format "HH:MM" (24-Stunden-Format)
+  const time = new Date().toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" });
+
+  msg.innerHTML = `<div>${text}</div><div class="timestamp">${time}</div>`;
   msgBox.appendChild(msg);
 
   // Scrollen zum Ende des Chatfensters
