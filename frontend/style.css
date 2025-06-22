@@ -1,5 +1,5 @@
 body {
-    background-color: #000;
+    background-color: white;
     margin: 0;
     font-family: Arial, sans-serif;
   }
@@ -30,6 +30,11 @@ body {
   object-fit: cover;
   }
 
+  /* Chat Toggle Button Hover Effect */
+  .chat-toggle:hover {
+  box-shadow: 0 0 10px #8cc8ff;
+}
+
   /* Chatbox
   Dies ist die Chatbox, die erscheint, wenn der Benutzer auf den Chat Toggle Button klickt.
   */
@@ -48,6 +53,7 @@ body {
     border-radius: 30px;
     border-left: 10px solid #475258;
     border-right: 10px solid #475258;
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.5);
   } 
 
   /* Chatbox Header
@@ -86,6 +92,7 @@ body {
     padding: 5px;
     border-radius: 5px;
     border: none;
+    color: white;
     background-color: #C4E6FC;
   }
   
@@ -101,6 +108,22 @@ body {
     border-radius: 5px;
     cursor: pointer;
   }
+
+  /* Eingabefeld (input) – Hover Effekt */
+.chat-footer input:hover,
+.chat-footer input:focus {
+  outline: none;
+  border: 1px solid #007bff;
+  background-color: #2a2a2a;
+  transition: background-color 0.2s, border 0.2s;
+}
+
+/* Senden-Button – Hover Effekt */
+.chat-footer button:hover {
+  background-color: #4f85c0;
+  box-shadow: 0 0 8px #007bff;
+  transition: background-color 0.2s, box-shadow 0.2s;
+}
 
   /* Chat Message
   Dies ist die Klasse für die Chatnachrichten.
