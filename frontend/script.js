@@ -1,3 +1,4 @@
+// Funktion zum Umschalten der Sichtbarkeit des Chatfensters
 function toggleChat() {
   const chatbox = document.getElementById("chatbox");
   chatbox.style.display = chatbox.style.display === "flex" ? "none" : "flex"; 
@@ -5,10 +6,10 @@ function toggleChat() {
 
 window.onload = () => {
   document.getElementById("chatbox").style.display = "none";
-
   const input = document.querySelector(".chat-footer input");
   const button = document.querySelector(".chat-footer button");
 
+  // Event-Listener für den Chat-Button
   button.addEventListener("click", async () => {
     const text = input.value.trim();
     if (text !== "") {
@@ -28,17 +29,18 @@ window.onload = () => {
              })
         });
 
-        //Antwort parsen
+        // Wenn die Antwort erfolgreich war, die Antwort formatieren und anzeigen
         if (response.ok) {
           const data = await response.json();
           const antwort = formatAntwort(data.response);
           appendMessage("ki", antwort);
-        } 
+        }
+        // Wenn die Antwort nicht erfolgreich war, eine Fehlermeldung anzeigen
         else {
           appendMessage("ki", "⚠️ Fehler beim Abrufen der Antwort vom Server.");
         }
-
       }
+      // Fehlerbehandlung
       catch (error) {
         appendMessage("ki", "⚠️ Der Server ist aktuell nicht erreichbar.");
         console.error("Backend-Fehler:", error);
@@ -54,6 +56,8 @@ window.onload = () => {
     }
   });
 };
+
+// Funktion zum Anhängen einer Nachricht an den Chat
 function appendMessage(sender, text) {
   const msgBox = document.getElementById("chat-messages");
   const msg = document.createElement("div");
@@ -67,6 +71,9 @@ function appendMessage(sender, text) {
   msgBox.scrollTop = msgBox.scrollHeight;
 }
 
+// Hilfsfunktion zum Formatieren der Antwort
 function formatAntwort(text) {
   return text.replace(/\n/g, "<br>");
 }
+
+// Ende of script.js
