@@ -1,48 +1,75 @@
-#Bibliotheken + Zugriff auf LLM und effizienter Ablauf auf GPU/CPU
-from transformers import AutoModelForCausalLM, AutoTokenizer
+from transformers import AutoTokenizer, AutoModelForCausalLM
 import torch
-import os
-from dotenv import load_dotenv
+import warnings
 
-#.env-Datei laden
-load_dotenv()
+MODEL_NAME = "TinyLlama/TinyLlama-1.1B-Chat-v1.0"
 
-#HuggingFace Token aus .env lesen
-HF_TOKEN = os.getenv("HF_TOKEN")
+#Geräteeinstellung, nutzt die GPU wenn verfügbar ansonsten wird die CPU belastet
+device = "cuda" if torch.cuda.is_available() else "cpu"
+torch_dtype = torch.float16 if device == "cuda" else torch.float32
 
-#Modellname: Leichtere Version wegen Hardware
-MODEL_NAME = "google/gemma-2b-it"
+if device == "cpu":
+    warnings.warn("⚠️ Achtung: Kein CUDA verfügbar. TinyLlama läuft langsamer auf CPU.")
 
-#Tokenizer laden
-tokenizer = AutoTokenizer.from_pretrained(
-    MODEL_NAME,
-    token=HF_TOKEN
-)
-
-#Modell laden – direkt (kein Offloading)
+#Modell + Tokenizer laden (Mit dem Tokenizer wird Text in Zahlen überstezt)
+tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
 model = AutoModelForCausalLM.from_pretrained(
     MODEL_NAME,
-    token=HF_TOKEN,
-    torch_dtype=torch.float16,
-    device_map="auto" 
+    torch_dtype=torch_dtype,
+    device_map="auto"
 )
 
-#Funktion zur Antwortgenerierung
+#Chatverlauf wird gespeichert 
+chat_history = []
+
+#Antwortparameter
+MAX_TOKENS = 80
+TOP_P = 0.92
+TEMPERATURE = 0.65
+MAX_HISTORY = 4  
+
 def generiere_antwort(prompt: str) -> str:
-    inputs = tokenizer(prompt, return_tensors="pt").to(model.device)
+    """
+    Generiert eine Antwort basierend auf Eingabe und Verlauf im TinyLlama-Stil.
+    """
+    #Systemrolle, damit beeinflussen wir das Systemverhalten
+    system_prompt = (
+        "<|system|>Du bist ein präziser, hilfreicher, deutscher KI-Assistent. "
+        "Verwende klare Sprache und antworte professionell, höflich und logisch.<|end|>\n"
+    )
+
+    #Kontext-Dialog aufbauen
+    chat_prompt = system_prompt
+    for eintrag in chat_history[-MAX_HISTORY:]:
+        frage = eintrag['frage'].strip().replace("\n", " ")
+        antwort = eintrag['antwort'].strip().replace("\n", " ")
+        chat_prompt += f"<|user|>{frage}<|end|>\n<|assistant|>{antwort}<|end|>\n"
+
+    #Neue Nutzereingabe
+    prompt = prompt.strip().replace("\n", " ")
+    chat_prompt += f"<|user|>{prompt}<|end|>\n<|assistant|>"
+
+    #Tokenisierung + Generierung
+    inputs = tokenizer(chat_prompt, return_tensors="pt").to(model.device)
 
     with torch.no_grad():
         output = model.generate(
             **inputs,
-            max_new_tokens=100,
+            max_new_tokens=MAX_TOKENS,
             do_sample=True,
-            top_p=0.9,
-            temperature=0.7
+            top_p=TOP_P,
+            temperature=TEMPERATURE,
+            pad_token_id=tokenizer.eos_token_id
         )
 
-    antwort = tokenizer.decode(output[0], skip_special_tokens=True)
+    #Ausgabe verarbeiten
+    antwort = tokenizer.decode(output[0], skip_special_tokens=True).strip()
 
-    if antwort.startswith(prompt):
-        antwort = antwort[len(prompt):].strip()
+    #Nur den letzten Assistant-Teil extrahieren
+    if "<|assistant|>" in antwort:
+        antwort = antwort.split("<|assistant|>")[-1].strip()
+
+    #Verlauf aktualisieren
+    chat_history.append({"frage": prompt, "antwort": antwort})
 
     return antwort
