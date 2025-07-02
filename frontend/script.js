@@ -24,9 +24,9 @@ window.onload = () => {
             "Content-Type": "application/json"
           },
           body: JSON.stringify({
-             benutzer: "Nutzer",
-             nachricht: text
-             })
+            benutzer: "Nutzer",
+            nachricht: text
+            })
         });
 
         // Wenn die Antwort erfolgreich war, die Antwort formatieren und anzeigen
@@ -76,4 +76,44 @@ function formatAntwort(text) {
   return text.replace(/\n/g, "<br>");
 }
 
+// ------------------------------------------------------------------------------
+// Kalender-Interaktion
+document.querySelectorAll(".calendar td").forEach(cell => {
+  const tag = cell.dataset.tag;
+  if (!tag) return;
+
+  cell.addEventListener("click", () => {
+  const mitarbeiter = document.getElementById("mitarbeiter").value;
+  const status = document.getElementById("status").value;
+
+  if (!mitarbeiter || !status || !cell.dataset.tag) return;
+
+  // vorhandene Eintragung löschen
+  const vorhanden = cell.querySelector(".zugewiesen");
+  if (vorhanden) vorhanden.remove();
+
+  // Klassen zurücksetzen
+  cell.classList.remove("assigned", "absent");
+
+  // neue Eintragung
+  const eintrag = document.createElement("div");
+  eintrag.classList.add("zugewiesen");
+  eintrag.textContent = mitarbeiter;
+  cell.appendChild(eintrag);
+  cell.classList.add(status); // z. B. assigned oder absent
+  });
+});
+
+// Funktion zum Zurücksetzen des Kalenders
+function resetPlan() {
+  document.querySelectorAll(".calendar td").forEach(cell => {
+    const tag = cell.dataset.tag;
+    if (tag) {
+      cell.innerHTML = `<div class="datum">${tag}</div>`;
+    } else {
+      cell.innerHTML = "";
+    }
+    cell.classList.remove("assigned", "absent");
+  });
+}
 // Ende of script.js

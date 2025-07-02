@@ -193,4 +193,82 @@ body {
   text-align: right;
 }
 
+/*-----------------------------------------------------------------------------------------*/
+/* Kalender-Container */
+.calendar-container {
+  max-width: 750px;
+  margin: 40px auto;
+  color: #000000;
+  background-color: #C4E6FC;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.4);
+}
+
+.calendar {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.calendar th, .calendar td {
+  border: 2px solid #333;
+  padding: 12px;
+  text-align: center;
+  min-width: 80px;
+  height: 60px;
+}
+
+/* Angeordnete */
+/* Diese Klasse wird für Mitarbeiter verwendet, die an diesem Tag zugewiesen sind. */
+.assigned {
+  background-color: #2b7cff;
+  font-weight: bold;
+  color: #fff;
+}
+
+/* Abwesend */
+/* Diese Klasse wird für Mitarbeiter verwendet, die an diesem Tag nicht verfügbar sind. */
+.absent {
+  background-color: #b93737;
+  font-weight: bold;
+  color: #fff;
+}
+
+.einsatzplan-steuerung {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin: 20px auto;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.einsatzplan-steuerung select,
+.einsatzplan-steuerung button {
+  padding: 8px;
+  font-size: 1rem;
+  border-radius: 6px;
+  border: 1px solid #555;
+  background-color: #2e2e2e;
+  color: white;
+}
+.einsatzplan-steuerung button:hover {
+  background-color: #b93737;
+  cursor: pointer;
+}
+
+.calendar td .zugewiesen {
+  display: block;
+  font-size: 0.85em;
+  color: #fff;
+  margin-top: 4px;
+}
+
+.assigned {
+  background-color: #2b7cff;
+  font-weight: bold;
+  color: white;
+}
+
   /* Ende von CSS-Datei */
