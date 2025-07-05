@@ -193,82 +193,243 @@ body {
   text-align: right;
 }
 
-/*-----------------------------------------------------------------------------------------*/
+/*-------------------------------------------------------------------------------------------------------------------------------------------*/
 /* Kalender-Container */
-.calendar-container {
-  max-width: 750px;
-  margin: 40px auto;
-  color: #000000;
-  background-color: #C4E6FC;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 0 15px rgba(0,0,0,0.4);
+:root {
+  --main-bg-gradient: #2f3b43;
+  --entry-bg: #1e90ff;
+  --entry-bg-red: #e05555;
+  --overlay-bg: rgba(0, 0, 0, 0.5);
+  --text-color: #d7dde3;
+  --input-bg: #3a4751;
+  --input-text: #cbd6e3;
 }
 
-.calendar {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 10px;
-}
-
-.calendar th, .calendar td {
-  border: 2px solid #333;
-  padding: 12px;
-  text-align: center;
-  min-width: 80px;
-  height: 60px;
-}
-
-/* Angeordnete */
-/* Diese Klasse wird für Mitarbeiter verwendet, die an diesem Tag zugewiesen sind. */
-.assigned {
-  background-color: #2b7cff;
-  font-weight: bold;
-  color: #fff;
-}
-
-/* Abwesend */
-/* Diese Klasse wird für Mitarbeiter verwendet, die an diesem Tag nicht verfügbar sind. */
-.absent {
-  background-color: #b93737;
-  font-weight: bold;
-  color: #fff;
-}
-
-.einsatzplan-steuerung {
+body {
+  margin: 0;
+  padding: 40px 20px;
+  font-family: Arial, sans-serif;
+  background: var(--main-bg-gradient);
+  min-height: 100vh;
   display: flex;
-  gap: 10px;
+  flex-direction: column;
   align-items: center;
-  margin: 20px auto;
-  justify-content: center;
-  flex-wrap: wrap;
+  color: var(--text-color);
 }
 
-.einsatzplan-steuerung select,
-.einsatzplan-steuerung button {
-  padding: 8px;
-  font-size: 1rem;
-  border-radius: 6px;
-  border: 1px solid #555;
-  background-color: #2e2e2e;
-  color: white;
+.calendar-container {
+  background: transparent;
+  box-shadow: none;
+  border-radius: 0;
+  width: 100%;
+  max-width: 1200px;
+  padding: 0;
 }
-.einsatzplan-steuerung button:hover {
-  background-color: #b93737;
+
+h2 {
+  margin-bottom: 20px;
+  font-weight: 700;
+  font-size: 2rem;
+  text-align: center;
+  color: var(--text-color);
+}
+
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 12px;
+}
+
+th {
+  font-weight: 600;
+  font-size: 1.2em;
+  color: var(--text-color);
+}
+
+td, th {
+  background: #3a4751;
+  border: 2px solid #1f2a34;
+  padding: 10px;
+  width: 140px;
+  height: 160px;
+  vertical-align: top;
   cursor: pointer;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 0.3);
+  position: relative;
+  overflow: hidden;
+  color: var(--text-color);
 }
 
-.calendar td .zugewiesen {
-  display: block;
-  font-size: 0.85em;
+td:hover {
+  background-color: #C4E6FC;
+  color: #000;
+}
+
+.eintrag {
   color: #fff;
-  margin-top: 4px;
+  font-size: 0.9em;
+  padding: 6px 10px;
+  margin-top: 8px;
+  border-radius: 6px;
+  box-shadow: 0 0 6px rgb(0 0 0 / 0.25);
+  position: relative;
 }
 
-.assigned {
-  background-color: #2b7cff;
-  font-weight: bold;
-  color: white;
+.eintrag.verfuegbar {
+  background: var(--entry-bg);
 }
 
-  /* Ende von CSS-Datei */
+.eintrag.nicht-verfuegbar {
+  background: var(--entry-bg-red);
+}
+
+.eintrag button {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  font-size: 0.8em;
+  background: transparent;
+  border: none;
+  color: #ddd;
+  cursor: pointer;
+  padding: 0 4px;
+  user-select: none;
+}
+
+#overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: var(--overlay-bg);
+  backdrop-filter: blur(3px);
+  display: none;
+  z-index: 900;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+#overlay.active {
+  display: block;
+  opacity: 1;
+}
+
+#eintragForm {
+  position: fixed;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%) scale(0.8);
+  background: #2f3b43;
+  padding: 30px 25px;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.8);
+  display: none;
+  z-index: 1000;
+  width: 400px;
+  max-width: 90vw;
+  opacity: 0;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  font-size: 1.1em;
+  color: var(--text-color);
+  border: 1px solid #1f2a34;
+}
+
+#eintragForm.active {
+  display: block;
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.form-header span {
+  font-weight: 700;
+  font-size: 1.4em;
+  color: var(--text-color);
+}
+
+.form-header button.close-btn {
+  background: transparent;
+  border: none;
+  font-size: 1.8em;
+  cursor: pointer;
+  color: #e05555;
+  line-height: 1;
+  user-select: none;
+}
+
+.form-row {
+  margin-bottom: 16px;
+}
+
+.form-row label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+input[type="text"],
+input[type="date"],
+select {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #1f2a34;
+  background-color: var(--input-bg);
+  color: var(--input-text);
+  font-size: 1em;
+  box-sizing: border-box;
+}
+
+input[type="text"]::placeholder {
+  color: #7a8490;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: brightness(0) invert(1);
+}
+
+.time-row, .date-row {
+  display: flex;
+  gap: 15px;
+}
+
+.time-row > div, .date-row > div {
+  flex: 1;
+}
+
+.form-buttons {
+  display: flex;
+  gap: 15px;
+}
+
+.form-buttons button {
+  flex: 1;
+  padding: 12px 0;
+  border-radius: 8px;
+  border: none;
+  font-weight: 700;
+  cursor: pointer;
+  color: #fff;
+  background-color: var(--entry-bg);
+  transition: background-color 0.3s ease;
+  user-select: none;
+  font-size: 1.1em;
+}
+
+.form-buttons button#cancelBtn {
+  background-color: #e05555;
+}
+
+.form-buttons button:hover {
+  background-color: #1a5dcc;
+}
+
+.form-buttons button#cancelBtn:hover {
+  background-color: #b03939;
+}
+
+/* Ende von CSS-Datei */
