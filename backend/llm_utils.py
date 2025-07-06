@@ -1,15 +1,16 @@
 from transformers import AutoTokenizer, AutoModelForCausalLM
 import torch
+from colorama import Fore, Style
 import warnings
 
 MODEL_NAME = "TinyLlama/TinyLlama-1.1B-Chat-v1.0"
 
-#Geräteeinstellung, nutzt die GPU wenn verfügbar ansonsten wird die CPU belastet
+#Geräteeinstellung – nutzt GPU wenn verfügbar, sonst CPU
 device = "cuda" if torch.cuda.is_available() else "cpu"
 torch_dtype = torch.float16 if device == "cuda" else torch.float32
 
 if device == "cpu":
-    warnings.warn("⚠️ Achtung: Kein CUDA verfügbar. TinyLlama läuft langsamer auf CPU.")
+    warnings.warn(Fore.YELLOW + "[WARNUNG] Keine GPU – TinyLlama läuft langsamer." + Style.RESET_ALL)
 
 #Modell + Tokenizer laden (Mit dem Tokenizer wird Text in Zahlen überstezt)
 tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
