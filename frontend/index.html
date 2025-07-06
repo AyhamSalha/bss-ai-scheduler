@@ -32,42 +32,85 @@
 <!-- ------------------------------------------------------------------------------------------------ -->
 
 <!-- Kalender-Container -->
-<div class="einsatzplan-steuerung">
-  <label for="mitarbeiter">Mitarbeiter zuweisen:</label>
-  <select id="mitarbeiter">
-    <option value="">-- wählen --</option>
-    <option value="Ayham">Ayham</option>
-    <option value="Gürhan">Gürhan</option>
-    <option value="Koutaibe">Koutaibe</option>
-    <option value="Suhail">Mustermann</option>
-  </select>
-  
-  <label for="status">Status:</label>
-  <select id="status">
-    <option value="assigned">Eingeteilt</option>
-    <option value="absent">Abwesend</option>
-  </select>
-
-  <button onclick="resetPlan()">Zurücksetzen</button>
-</div>
-
 <div class="calendar-container">
-  <h2>Prototyp für Personaleinsatzplan – Juli 2025</h2>
-  <table class="calendar">
+  <h2>Prototyp für Personaleinsatzplanung – Juli 2025</h2>
+  <table id="kalender">
     <thead>
-      <tr><th>Mo</th><th>Di</th><th>Mi</th><th>Do</th><th>Fr</th><th>Sa</th><th>So</th></tr>
+      <tr>
+        <th>Mo</th>
+        <th>Di</th>
+        <th>Mi</th>
+        <th>Do</th>
+        <th>Fr</th>
+        <th>Sa</th>
+        <th>So</th>
+      </tr>
     </thead>
-    <tbody>
-      <tr><td></td><td data-tag="1"><div class="datum">1</div></td><td data-tag="2"><div class="datum">2</div></td><td data-tag="3"><div class="datum">3</div></td><td data-tag="4"><div class="datum">4</div></td><td data-tag="5"><div class="datum">5</div></td><td data-tag="6"><div class="datum">6</div></td></tr>
-      <tr><td data-tag="7"><div class="datum">7</div></td><td data-tag="8"><div class="datum">8</div></td><td data-tag="9"><div class="datum">9</div></td><td data-tag="10"><div class="datum">10</div></td><td data-tag="11"><div class="datum">11</div></td><td data-tag="12"><div class="datum">12</div></td><td data-tag="13"><div class="datum">13</div></td></tr>
-      <tr><td data-tag="14"><div class="datum">14</div></td><td data-tag="15"><div class="datum">15</div></td><td data-tag="16"><div class="datum">16</div></td><td data-tag="17"><div class="datum">17</div></td><td data-tag="18"><div class="datum">18</div></td><td data-tag="19"><div class="datum">19</div></td><td data-tag="20"><div class="datum">20</div></td></tr>
-      <tr><td data-tag="21"><div class="datum">21</div></td><td data-tag="22"><div class="datum">22</div></td><td data-tag="23"><div class="datum">23</div></td><td data-tag="24"><div class="datum">24</div></td><td data-tag="25"><div class="datum">25</div></td><td data-tag="26"><div class="datum">26</div></td><td data-tag="27"><div class="datum">27</div></td></tr>
-      <tr><td data-tag="28"><div class="datum">28</div></td><td data-tag="29"><div class="datum">29</div></td><td data-tag="30"><div class="datum">30</div></td><td data-tag="31"><div class="datum">31</div></td><td></td><td></td><td></td></tr>
-    </tbody>
+    <tbody id="calendarBody"></tbody>
   </table>
 </div>
 
+<div id="overlay"></div>
 
+<form id="eintragForm" aria-modal="true" role="dialog" novalidate>
+  <div class="form-header">
+    <span>Eintrag verwalten</span>
+    <button type="button" class="close-btn" aria-label="Schließen">&times;</button>
+  </div>
+  <input type="hidden" id="bearbeiteDatum" />
+  <input type="hidden" id="bearbeiteIndex" />
+
+  <div class="form-row">
+    <label for="title">Titel</label>
+    <input type="text" id="title" required />
+  </div>
+
+  <div class="form-row time-row">
+    <div>
+      <label for="uhrzeit">Startzeit</label>
+      <select id="uhrzeit" required></select>
+    </div>
+    <div>
+      <label for="endzeit">Endzeit</label>
+      <select id="endzeit" required></select>
+    </div>
+  </div>
+
+  <div class="form-row date-row">
+    <div>
+      <label for="von">Von</label>
+      <input type="date" id="von" required min="2025-07-01" max="2025-07-31" />
+    </div>
+    <div>
+      <label for="bis">Bis</label>
+      <input type="date" id="bis" required min="2025-07-01" max="2025-07-31" />
+    </div>
+  </div>
+
+  <div class="form-row">
+    <label for="mitarbeiter">Mitarbeiter</label>
+    <select id="mitarbeiter">
+      <option>Ayham</option>
+      <option>Gürhan</option>
+      <option>Koutaibe</option>
+      <option>Mustafa</option>
+      <option>Mustermann</option>
+    </select>
+  </div>
+
+  <div class="form-row">
+    <label for="verfuegbar">Verfügbarkeit</label>
+    <select id="verfuegbar">
+      <option value="Ja">Verfügbar</option>
+      <option value="Nein">Nicht verfügbar</option>
+    </select>
+  </div>
+
+  <div class="form-buttons">
+    <button type="submit">Speichern</button>
+    <button type="button" id="cancelBtn">Abbrechen</button>
+  </div>
+</form>
 <!-- Aufrufen von JavaScript -->
 <script src="script.js"></script>
 </body>
