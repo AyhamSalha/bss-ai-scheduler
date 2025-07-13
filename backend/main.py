@@ -61,6 +61,7 @@ def read_root():
 #Haupt-POST-Endpunkt: speichert Nachricht + antwortet mit LLM
 @app.post("/chat")
 async def chat(request: ChatRequest):
+    
     #Nachricht in Datenbank speichern
     conn = sqlite3.connect("chat.db")
     cursor = conn.cursor()
@@ -74,7 +75,8 @@ async def chat(request: ChatRequest):
     #LLM-Antwort generieren
     antwort = generiere_antwort(request.nachricht)
 
-    return {"response": antwort}
+    #Korrigiert: direkt zurückgeben
+    return antwort
 
 #Swagger-Test-Endpunkt
 @app.post("/eintrag")
