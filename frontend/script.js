@@ -1,4 +1,4 @@
-// Funktion zum Umschalten der Sichtbarkeit des Chatfensters
+//Funktion zum Umschalten der Sichtbarkeit des Chatfensters
 function toggleChat() {
   const chatbox = document.getElementById("chatbox");
   chatbox.style.display = chatbox.style.display === "flex" ? "none" : "flex"; 
@@ -9,7 +9,7 @@ window.onload = () => {
   const input = document.querySelector(".chat-footer input");
   const button = document.querySelector(".chat-footer button");
 
-  // Event-Listener für den Chat-Button
+  //Event-Listener für den Chat-Button
   button.addEventListener("click", async () => {
     const text = input.value.trim();
     if (text !== "") {
@@ -26,21 +26,35 @@ window.onload = () => {
           body: JSON.stringify({
             benutzer: "Nutzer",
             nachricht: text
-            })
+          })
         });
 
-        // Wenn die Antwort erfolgreich war, die Antwort formatieren und anzeigen
         if (response.ok) {
           const data = await response.json();
-          const antwort = formatAntwort(data.response);
-          appendMessage("ki", antwort);
+
+          //Neue robuste Prüfung:
+          if (typeof data.response === "string") {
+            const antwort = formatAntwort(data.response);
+            appendMessage("ki", antwort);
+          } else {
+            console.warn("Unerwartetes Format von data.response:", data.response);
+            appendMessage("ki", "⚠️ Die Antwort vom Server war leer oder ungültig.");
+          }
+
+          //Kalender-Eintrag übernehmen (optional)
+          if (data.eintrag) {
+            const d = data.eintrag.datum;
+            if (!eintraege[d]) eintraege[d] = [];
+            eintraege[d].push(data.eintrag);
+            erzeugeKalender();
+          }
         }
-        // Wenn die Antwort nicht erfolgreich war, eine Fehlermeldung anzeigen
+        //Wenn die Antwort nicht erfolgreich war, eine Fehlermeldung anzeigen
         else {
           appendMessage("ki", "⚠️ Fehler beim Abrufen der Antwort vom Server.");
         }
       }
-      // Fehlerbehandlung
+      //Fehlerbehandlung
       catch (error) {
         appendMessage("ki", "⚠️ Der Server ist aktuell nicht erreichbar.");
         console.error("Backend-Fehler:", error);
@@ -48,7 +62,7 @@ window.onload = () => {
     }
   });
 
-   // Beim Drücken der Enter-Taste die Nachricht senden
+  //Beim Drücken der Enter-Taste die Nachricht senden
   input.addEventListener("keypress", (e) => {
     if (e.key === "Enter") {
       e.preventDefault();
@@ -57,13 +71,13 @@ window.onload = () => {
   });
 };
 
-// Funktion zum Anhängen einer Nachricht an den Chat
+//Funktion zum Anhängen einer Nachricht an den Chat
 function appendMessage(sender, text) {
   const msgBox = document.getElementById("chat-messages");
   const msg = document.createElement("div");
   msg.classList.add("chat-message", sender);
 
-   // Aktuelle Uhrzeit im Format "HH:MM" (24-Stunden-Format)
+  //Aktuelle Uhrzeit im Format "HH:MM" (24-Stunden-Format)
   const time = new Date().toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" });
 
   msg.innerHTML = `<div>${text}</div><div class="timestamp">${time}</div>`;
@@ -71,13 +85,13 @@ function appendMessage(sender, text) {
   msgBox.scrollTop = msgBox.scrollHeight;
 }
 
-// Hilfsfunktion zum Formatieren der Antwort
+//Hilfsfunktion zum Formatieren der Antwort
 function formatAntwort(text) {
   return text.replace(/\n/g, "<br>");
 }
 
 // -------------------------------------------------------------------------------------------------------------------------
-// Kalender-Interaktion
+//Kalender-Interaktion
 const eintraege = {};
 let selectedDate = "";
 
@@ -93,14 +107,12 @@ window.addEventListener("keydown", e => {
   }
 });
 
-// Generate time options for selects
+//Generate time options for selects
 function generateTimeOptions() {
   const times = [];
   for (let h = 8; h <= 18; h++) {
     for (let m = 0; m < 60; m += 15) {
-      // Skip times after 18:00 exactly (only allow up to 18:00)
       if (h === 18 && m > 0) break;
-
       const hh = String(h).padStart(2, '0');
       const mm = String(m).padStart(2, '0');
       times.push(`${hh}:${mm}`);
@@ -118,14 +130,13 @@ function fillTimeSelects() {
   endzeitSelect.innerHTML = times.map(t => `<option value="${t}">${t}</option>`).join('');
 }
 
-// Call once on page load
 fillTimeSelects();
 
 function erzeugeKalender() {
   const tbody = document.getElementById("calendarBody");
   tbody.innerHTML = "";
   let tag = 1;
-  const startWochentag = 1; // Dienstag=1 for July 1, 2025
+  const startWochentag = 1; 
   const tageImMonat = 31;
 
   for (let i = 0; i < 5; i++) {
@@ -245,4 +256,4 @@ form.addEventListener("submit", (event) => {
 
 erzeugeKalender();
 
-// Ende of script.js
+//Ende of script.js
