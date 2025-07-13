@@ -2,17 +2,18 @@ from transformers import AutoTokenizer, AutoModelForCausalLM
 import torch
 from colorama import Fore, Style
 import warnings
+from backend.llm_command_parser import parse_plan_befehl
 
 MODEL_NAME = "TinyLlama/TinyLlama-1.1B-Chat-v1.0"
 
-#Geräteeinstellung – nutzt GPU wenn verfügbar, sonst CPU
+#Geräteeinstellung - nutzt GPU wenn verfügbar, sonst CPU
 device = "cuda" if torch.cuda.is_available() else "cpu"
 torch_dtype = torch.float16 if device == "cuda" else torch.float32
 
 if device == "cpu":
     warnings.warn(Fore.YELLOW + "[WARNUNG] Keine GPU – TinyLlama läuft langsamer." + Style.RESET_ALL)
 
-#Modell + Tokenizer laden (Mit dem Tokenizer wird Text in Zahlen überstezt)
+#Modell + Tokenizer laden
 tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
 model = AutoModelForCausalLM.from_pretrained(
     MODEL_NAME,
@@ -29,11 +30,33 @@ TOP_P = 0.92
 TEMPERATURE = 0.65
 MAX_HISTORY = 4  
 
-def generiere_antwort(prompt: str) -> str:
+def generiere_antwort(prompt: str) -> dict:
     """
-    Generiert eine Antwort basierend auf Eingabe und Verlauf im TinyLlama-Stil.
+    Generiert eine Antwort basierend auf Eingabe und Verlauf – oder
+    verarbeitet erkannte Planungsbefehle direkt.
+    Gibt Dictionary zurück mit Antwort + optionalem Kalender-Eintrag.
     """
-    #Systemrolle, damit beeinflussen wir das Systemverhalten
+
+    #Planungsbefehl erkennen
+    befehl = parse_plan_befehl(prompt)
+    eintrag = None
+
+    if befehl:
+        eintrag = {
+            "title": "Geplant (via KI)",
+            "datum": befehl["datum"],
+            "uhrzeit": "09:00–17:00",
+            "mitarbeiter": befehl["mitarbeiter"],
+            "verfuegbar": "Ja"
+        }
+
+        antwort = f"{befehl['mitarbeiter']} wurde am {befehl['datum']} eingeplant."
+        return {
+            "response": antwort,
+            "eintrag": eintrag
+        }
+
+    #Standard-LLM-Antwort generieren
     system_prompt = (
         "<|system|>Du bist ein präziser, hilfreicher, deutscher KI-Assistent. "
         "Verwende klare Sprache und antworte professionell, höflich und logisch.<|end|>\n"
@@ -41,12 +64,12 @@ def generiere_antwort(prompt: str) -> str:
 
     #Kontext-Dialog aufbauen
     chat_prompt = system_prompt
-    for eintrag in chat_history[-MAX_HISTORY:]:
-        frage = eintrag['frage'].strip().replace("\n", " ")
-        antwort = eintrag['antwort'].strip().replace("\n", " ")
+    for eintrag_alt in chat_history[-MAX_HISTORY:]:
+        frage = eintrag_alt['frage'].strip().replace("\n", " ")
+        antwort = eintrag_alt['antwort'].strip().replace("\n", " ")
         chat_prompt += f"<|user|>{frage}<|end|>\n<|assistant|>{antwort}<|end|>\n"
 
-    #Neue Nutzereingabe
+    #Neue Eingabe einfügen
     prompt = prompt.strip().replace("\n", " ")
     chat_prompt += f"<|user|>{prompt}<|end|>\n<|assistant|>"
 
@@ -65,12 +88,13 @@ def generiere_antwort(prompt: str) -> str:
 
     #Ausgabe verarbeiten
     antwort = tokenizer.decode(output[0], skip_special_tokens=True).strip()
-
-    #Nur den letzten Assistant-Teil extrahieren
     if "<|assistant|>" in antwort:
         antwort = antwort.split("<|assistant|>")[-1].strip()
 
     #Verlauf aktualisieren
     chat_history.append({"frage": prompt, "antwort": antwort})
 
-    return antwort
+    return {
+        "response": antwort,
+        "eintrag": None
+    }
