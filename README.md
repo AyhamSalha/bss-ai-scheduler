@@ -2,7 +2,7 @@
 
 ## Projektvision
 
-Ziel ist die Entwicklung eines intelligenten KI-gestützten Assistenzsystems, das Organisationsteams bei der Personaleinsatzplanung unterstützt. Der KI-Agent hilft, Einsatzpläne effizient zu erstellen, Fehler zu vermeiden und Mitarbeitende optimal einzusetzen – über eine benutzerfreundliche Chat-Oberfläche.
+Ziel war die Entwicklung eines intelligenten Assistenzsystems zur Unterstützung der Personaleinsatzplanung. Der KI-Agent agiert über eine benutzerfreundliche Chatoberfläche und ermöglicht die Verwaltung von Verfügbarkeiten sowie das Eintragen von Einsätzen direkt im Kalender. Das System unterstützt Planungsverantwortliche dabei, Einsätze effizient zu koordinieren – lokal, datenschutzkonform und benutzerfreundlich.
 
 ---
 
@@ -11,65 +11,98 @@ Ziel ist die Entwicklung eines intelligenten KI-gestützten Assistenzsystems, da
 1. [Beschreibung](#beschreibung)
 2. [Funktionen](#funktionen)
 3. [Nicht-funktionale-Anforderungen](#nicht-funktionale-anforderungen)
-4. [Systemanforderungen](#systemanforderungen)
-5. [Externe-Schnittstellen](#externe-schnittstellen)
-6. [Qualitätsanforderungen](#qualitätsanforderungen)
-7. [Technologiestack](#technologiestack)
-8. [Installation](#installation)
-9. [Verwendung](#verwendung)
-10. [API-Endpunkte & Beispielanfragen](#api-endpunkte--beispielanfragen) 
-11. [Verwertungsplan](#verwertungsplan)
-12. [Lizenz](#lizenz)
-13. [Kontakt](#kontakt)
+4. [Aktueller Stand](#aktueller-Stand)
+5. [Systemanforderungen](#systemanforderungen)
+6. [Externe-Schnittstellen](#externe-schnittstellen)
+7. [Qualitätsanforderungen](#qualitätsanforderungen)
+8. [Technologiestack](#technologiestack)
+9. [Installation](#installation)
+10. [Verwendung](#verwendung)
+11. [API-Endpunkte & Beispielanfragen](#api-endpunkte--beispielanfragen) 
+12. [Verwertungsplan](#verwertungsplan)
+13. [Lizenz](#lizenz)
+14. [Kontakt](#kontakt)
 
 ---
 
 ## Beschreibung
 
-Das System ermöglicht die Planung über einen interaktiven Chat mit einem lokalen KI-Agenten.
-Basierend auf Eingaben zu Verfügbarkeiten, Abwesenheiten, Qualifikationen und Mitarbeiterpräferenzen erstellt der Agent automatisch Vorschläge und zeigt Konflikte auf.
+Dieses System ermöglicht die intuitive Personaleinsatzplanung über eine Chat-Oberfläche, die mit einem lokal betriebenen KI-Agenten verbunden ist. Über natürliche Spracheingaben können Nutzer:innen Verfügbarkeiten verwalten und Einsatzwünsche direkt übermitteln. Die KI interpretiert diese Eingaben mithilfe von Regex und generiert daraus Kalendereinträge.
+
+Das Backend basiert auf FastAPI und stellt über eine REST-API verschiedene Funktionen bereit, wie das Eintragen, Abrufen und Verwalten von Planungsinformationen. Die Datenhaltung erfolgt lokal in einer SQLite-Datenbank – vollständig ohne Cloud-Anbindung, um Datenschutz zu gewährleisten.
 
 ***Hauptmerkmale:***
-- *Planung über Chat mit lokalem LLM (z. B. gemma:2b)*
-- *Automatische Planungsvorschläge & Fehlererkennung*
+- *Chatbasierte Einsatzplanung mit lokalem KI-Agenten (TinyLlama)*
+- *Verfügbarkeits- und Einsatzverwaltung über eine grafische Kalenderoberfläche*
 - *Speicherung und Abruf des Chatverlaufs*
-- *Verwaltung von Abwesenheiten & Einsatzwünschen*
-- *Lokale Datenhaltung (SQLite)*
+- *Lokaler, datenschutzkonformer Betrieb*
+- *Modularer Aufbau mit klarer Trennung von Frontend, Backend, Datenbank und KI*
+
+**Hintergrund zur Entwicklung :**  
+Ursprünglich war geplant, einen externen Kundenkalender über eine API anzubinden. Da jedoch keine realen Daten bereitgestellt wurden, wurde eine eigene Kalenderlösung implementiert. Diese Lösung ermöglicht es, Verfügbarkeiten direkt per Klick im Kalender zu setzen und per Texteingabe neue Einsätze zu planen.
+
+- Beispielhafte Eingabe:
+
+„Plane mir Gürhan am Dienstag ein“
+
+- Ergebnis:
+
+Die KI erkennt den Namen, das Datum und erstellt automatisch den passenden Kalendereintrag, sofern der Server aktiv ist.
 
 ---
 
 ## Funktionen
 
-### 1. Chatbasierte Planung mit KI-Agent  
-Einsatzplanung direkt über eine Chat-Oberfläche.
+1. **Chatbasierte Einsatzplanung**  
+Einfache Planung direkt über eine Chat-Oberfläche.
 
-### 2. Automatische Planungsvorschläge  
-Vorschläge für geeignete Mitarbeitende und Schichten basierend auf Verfügbarkeit und Qualifikation.
 
-### 3. Planungsfehler-Erkennung  
-Automatisierte Erkennung von Konflikten (z. B. Überschneidungen, fehlende Qualifikationen).
+2. **KI-Interpretation**  
+Planung per natürlicher Sprache durch Regex + LLM.
 
-### 4. Abwesenheitsverwaltung 
-Erfassung von Ausfällen und individuellen Einsatzwünschen durch den Benutzer.
+3. **Interaktiver Kalender**  
+Darstellung & Bearbeitung von Einträgen.
 
-### 5. Verlaufsverwaltung 
-Automatische Speicherung der Konversationen und Möglichkeit zum Abruf oder zur Löschung.
+4. **Verfügbarkeitsverwaltung**  
+Manuelle Auswahl verfügbarer Tage für Mitarbeitende.
 
-### 6. Planungsvorschau  
-Übersicht über geplante Einsätze vor Freigabe.
+5. **Chatverlauf**   
+Speicherung von Anfragen & Antworten.
+
+6. **Fehlermeldungen**  
+Anzeige bei Serverfehlern oder Kommunikationsproblemen.
+
+7. **Lokaler Betrieb**  
+Alle Daten bleiben auf dem lokalen System.
 
 ---
 
 ## Nicht-funktionale Anforderungen
-**Sicherheit:** Geschützte Kommunikation (HTTPS geplant), nur autorisierter Zugriff
+**Datenschutz:** Keine Cloud-Anbindung – alle Daten verbleiben lokal
 
-**Wartbarkeit:** Modularer, dokumentierter Code mit Git-Versionierung
+**Modularität:** Saubere Trennung von Frontend, Backend, Datenbank und KI-Anbindung
 
-**Portabilität:** Plattformunabhängiger, lokaler Betrieb ohne Cloud-Zwang
+**Kompatibilität:** Austauschbare KI-Modelle (z. B. TinyLlama) über REST-API integrierbar
 
-**Kompatibilität:** Austauschbare KI-Modelle via REST-API
+**Erweiterbarkeit:** Zukunftsfähig für Zusatzfunktionen
 
-**Erweiterbarkeit:** Zukunftsfähig für Zusatzfunktionen wie Kalender oder Statistike
+**Plattformunabhängigkeit:** Lokaler Betrieb unter Windows, macOS und Linux möglich
+
+**Installierbarkeit:** Keine spezielle Infrastruktur nötig – läuft mit Standard-Tools lokal
+
+---
+
+## Aktueller Stand
+
+Der KI-Agent reagiert nur auf konkrete Planungsanfragen und schlägt keine Mitarbeitenden proaktiv vor.
+
+Eingaben wie „Plane mir Ayham am Dienstag ein“ führen zur Erstellung eines Eintrags im Kalender (wenn Server aktiv).
+
+Wenn der Server nicht läuft, wird im Chat eine entsprechende Warnung angezeigt („Der Server ist aktuell nicht erreichbar“).
+
+Verfügbarkeiten können zusätzlich direkt im Kalender gesetzt werden.
+
+Der Kalender zeigt visuell, wer wann verfügbar ist und welche Einträge über die KI geplant wurden.
 
 ---
 
@@ -84,30 +117,37 @@ Automatische Speicherung der Konversationen und Möglichkeit zum Abruf oder zur 
 - Python 3.10 oder höher
 - SQLite (lokal)
 - Git
-- Lokales LLM (z. B. gemma:2b)
+- Lokales LLM (TinyLlama)
+
+*Abhängigkeiten:*
+- uvicorn, fastapi, torch, transformers, accelerate
 
 ---
 
 ## Externe Schnittstellen
-- **Webbrowser (Frontend):** HTML, CSS, JS
+- **Webbrowser (Benutzerschnittstelle)**
 
-- **REST-API (FastAPI):** JSON-basierte Schnittstelle
+- **REST-API (FastAPI)** JSON-basierte Schnittstelle
 
-- **POST /chat** – Anfrage senden
+- **POST /chat** – Nutzeranfrage senden
 
-- **GET /history** – Verlauf abrufen
+- **GET /history** – Chatverlauf abrufen
 
 - **Datenbank:** Speicherung von Anfragen, Antworten, Nutzerdaten
 
-- **KI-Modell (z. B. gemma:2b):** Zugriff über lokale API
+- **LLM-Modell (z. B. TinyLlama):** Zugriff über lokale API
 ---
 
 ## Qualitätsanforderungen
 
-• **Zuverlässigkeit**: >95 % korrekte Ergebnisse  
-• **Antwortgeschwindigkeit**: <1 Sekunde bei 5 Anfragen gleichzeitig  
-• **Skalierbarkeit**: bis zu 100 Mitarbeitende und 1000 Einsatzpläne/Jahr  
-• **Benutzerfreundlichkeit**: responsives Design, klare Hinweise & Tooltips
+• **Zuverlässigkeit**:  
+Stabiler Chatbot mit Fehlerbehandlung bei leeren oder fehlerhaften Antworten.  
+• **Antwortgeschwindigkeit**:  
+ < 1 Sekunde Reaktionszeit bei Einzelanfragen unter realistischen Bedingungen.  
+• **Benutzerfreundlichkeit**:  
+Intuitive Oberfläche mit strukturiertem Kalender, direkter Eingabe und Chatverlauf.  
+• **Wartbarkeit**:   
+Modularer, gut kommentierter Code mit Git-Versionskontrolle für einfache Erweiterung.
 
 ---
 
@@ -115,16 +155,17 @@ Automatische Speicherung der Konversationen und Möglichkeit zum Abruf oder zur 
 
 • **Frontend**: HTML, CSS, JavaScript + Fetch API  
 • **Backend/API**: FastAPI in Python  
-• **Server**: Uvicorn (lokal)  
+• **LLM-Anbindung**: Lokal installiertes LLM (TinyLlama)  
 • **Datenbank**: SQLite (lokal)  
-• **KI-Modell**: z. B. `gemma:2b` über Port 11434 (modular, lokal)  
-• **Editor**: Visual Studio Code
+• **Kommunikation**: REST-API  
+• **Server**: Uvicorn (lokal)    
+• **Editor**: Visual Studio Code  
 
 ---
 
 ## Installation
 
-1. Stellen Sie sicher, dass Python (mindestens Version 3.10), Git und das lokale LLM (z. B. gemma:2b)
+1. Stellen Sie sicher, dass Python (mindestens Version 3.10), Git und das lokale LLM (z. B. TinyLlama)
 installiert und betriebsbereit sind.
 
 2. Klonen Sie das Repository auf Ihren lokalen Rechner:
@@ -142,7 +183,13 @@ git clone https://gitlab.rz.htw-berlin.de/softwareentwicklungsprojekt/sose2025/t
 ---
 
 ## Verwendung
-Öffnen Sie einen Webbrowser und rufen Sie http://localhost:8000 auf. Dort können Sie über die Chat-Oberfläche mit dem KI-Agenten interagieren, Einsatzpläne erstellen und verwalten. Das System analysiert Eingaben, prüft auf Konflikte und gibt passende Vorschläge aus.
+1. Öffnen Sie einen Webbrowser und rufen Sie http://localhost:8000 auf. 
+2. Einsatzanfrage über den Chat senden:  
+Beispiel: Plane mir Koutaibe am Dienstag ein.
+3. System antwortet mit:   Koutaibe wurde am 2025-07-15 eingeplant.
+4. Eintrag erscheint im Kalender.
+5. Verfügbarkeit kann direkt über Kalender gesetzt werden
+6. Bei Serverfehlern erscheinen entsprechende Warnungen
 
 ---
 
@@ -160,8 +207,8 @@ Beschreibung: Speichert einen neuen Chatverlaufseintrag in der Datenbank.
 **Beispielanfrage:**
 ```json
 {  
-  "benutzer": "Kai",  
-  "nachricht": "Bitte plane mich für Dienstag ein",  
+  "benutzer": "Ayham",  
+  "nachricht": "plane mir Ayham am Dienstag ein",  
   "timestamp": "2025-06-21 14:00:00"
 } 
 ```
@@ -179,13 +226,13 @@ Beschreibung: Sendet eine Chat-Nachricht und erhält eine Antwort vom KI-Agenten
 
 ```
 {  
-  "message": "Wer ist morgen verfügbar?"  
+  "message": "Plane mir Gürhan am Mittwoch ein?"  
 }
 ```
 **Antwort:**
 ```
 {  
-  "response": "Dies ist eine Platzhalterantwort vom KI-Agenten."  
+  "response": "Gürhan wurde am 2025-07-16 eingeplant."  
 }
 ```
 
@@ -197,7 +244,7 @@ Die vollständige automatisch generierte API-Dokumentation ist unter http://loca
 ---
 
 ## Verwertungsplan
-Dieses Projekt wurde im Rahmen des Moduls Softwareentwicklungsprojekt realisiert. Es bietet eine Open-Source-Lösung zur lokalen, datenschutzkonformen Personaleinsatzplanung. Durch den modularen Aufbau kann es flexibel erweitert oder in bestehende Systeme integriert werden.
+Dieses Projekt wurde im Rahmen des Moduls Softwareentwicklungsprojekt realisiert. Es dient als funktionaler Prototyp für eine mögliche spätere Integration in echte Planungssysteme. Die verwendete modulare Architektur erlaubt es, das System flexibel zu erweitern (z. B. automatische Vorschläge, externe Kalendersysteme, Reporting-Funktionen).
 
 ---
 
