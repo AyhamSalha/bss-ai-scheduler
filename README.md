@@ -37,8 +37,8 @@ Developed as a client project for **BSS GmbH** during the Summer Semester 2025 S
 
 ```bash
 # Clone the repository
-git clone <your-repo-url>
-cd team-14-personaleinsatzplanung-bss
+git clone https://github.com/AyhamSalha/bss-ai-scheduler
+cd bss-ai-scheduler
 
 # Start with Docker Compose
 docker-compose up -d
@@ -53,8 +53,8 @@ docker-compose up -d
 
 ```bash
 # Clone and navigate
-git clone <your-repo-url>
-cd team-14-personaleinsatzplanung-bss
+git clone https://github.com/AyhamSalha/bss-ai-scheduler
+cd bss-ai-scheduler
 
 # Create virtual environment
 python -m venv .venv
@@ -185,8 +185,8 @@ uvicorn backend.main:app --reload
 
 1. **Clone the repository**
    ```bash
-   git clone <your-repo-url>
-   cd team-14-personaleinsatzplanung-bss
+   git clone https://github.com/AyhamSalha/bss-ai-scheduler
+   cd bss-ai-scheduler
    ```
 
 2. **Set up Python environment**
