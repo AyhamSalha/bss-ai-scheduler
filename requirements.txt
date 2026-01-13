@@ -1,0 +1,14 @@
+fastapi
+uvicorn[standard]
+torch
+transformers
+accelerate
+colorama
+pydantic
+pydantic-settings
+python-dotenv
+pytest
+pytest-asyncio
+httpx
+black
+pylint

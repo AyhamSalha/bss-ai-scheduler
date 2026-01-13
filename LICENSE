@@ -1,29 +1,30 @@
-MIT-Lizenz (deutsche Übersetzung – rechtlich unverbindlich)
+MIT License
 
-Copyright (c) 2025 Thema 14: KI-Agenten für die Personaleinsatzplanung (BSS)
+Copyright (c) 2025 Team 14: AI Agents for Staff Scheduling (BSS)
 Koutaibe Alhassan, Gürhan Arabaci, Ayham Salha
 
-Hiermit wird unentgeltlich jeder Person, die eine Kopie dieser Software und der zugehörigen 
-Dokumentationsdateien (die „Software“) erhält, die Erlaubnis erteilt, die Software uneingeschränkt zu nutzen, 
-einschließlich und ohne Einschränkung des Rechts, sie zu verwenden, zu kopieren, zu modifizieren, 
-zusammenzuführen, zu veröffentlichen, zu verbreiten, unterzulizenzieren und/oder zu verkaufen, 
-und Personen, denen diese Software bereitgestellt wird, diese Rechte zu gewähren, 
-vorbehaltlich der folgenden Bedingungen:
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-Der obige Urheberrechtshinweis und dieser Genehmigungshinweis müssen in allen Kopien 
-oder wesentlichen Teilen der Software enthalten sein.
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
-DIE SOFTWARE WIRD „WIE BESEHEN“ BEREITGESTELLT, OHNE JEGLICHE AUSDRÜCKLICHE ODER 
-STILLSCHWEIGENDE GEWÄHRLEISTUNG, EINSCHLIESSLICH DER GEWÄHRLEISTUNG DER MARKTGÄNGIGKEIT, 
-DER EIGNUNG FÜR EINEN BESTIMMTEN ZWECK UND DER NICHTVERLETZUNG. IN KEINEM FALL SIND DIE AUTOREN 
-ODER URHEBERRECHTSINHABER FÜR ANSPRÜCHE, SCHÄDEN ODER SONSTIGE HAFTUNGEN VERANTWORTLICH, 
-OB AUS EINEM VERTRAG, DELIKT ODER ANDERWEITIG, DIE AUS DER SOFTWARE ODER DER VERWENDUNG ODER 
-SONSTIGEN GESCHÄFTEN MIT DER SOFTWARE ENTSTEHEN.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
 
 ---
 
-**Hinweis zu Drittkomponenten:**  
-Diese Lizenz bezieht sich ausschließlich auf die von **Team 14 – BSS KI-Agenten** entwickelte Software.  
-Das lokal angebundene Sprachmodell **gemma:2b** unterliegt der **nicht-kommerziellen Lizenz von Meta AI**.  
-Es ist **nicht Bestandteil dieser Software** und kann jederzeit durch ein alternatives Modell ersetzt werden.  
-Die Hauptanwendung bleibt dadurch vollständig unter der MIT-Lizenz verwendbar.
+**Third-Party Components:**  
+This license applies exclusively to the software developed by **Team 14 – BSS AI Agents**.  
+The locally integrated language model **TinyLlama-1.1B-Chat-v1.0** is licensed under the **Apache License 2.0**.  
+It is **not part of this software distribution** and can be replaced with any alternative model.  
+The main application remains fully usable under the MIT License.

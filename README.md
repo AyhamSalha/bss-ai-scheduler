@@ -1,264 +1,462 @@
-# KI-Agent für Personaleinsatzplanung (BSS)
+# 📅 BSS KI-Agent - AI-Powered Staff Scheduling System
 
-## Projektvision
+[![Python](https://img.shields.io/badge/Python-3.11+-blue.svg)](https://www.python.org/downloads/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.100+-green.svg)](https://fastapi.tiangolo.com/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
-Ziel war die Entwicklung eines intelligenten Assistenzsystems zur Unterstützung der Personaleinsatzplanung. Der KI-Agent agiert über eine benutzerfreundliche Chatoberfläche und ermöglicht die Verwaltung von Verfügbarkeiten sowie das Eintragen von Einsätzen direkt im Kalender. Das System unterstützt Planungsverantwortliche dabei, Einsätze effizient zu koordinieren – lokal, datenschutzkonform und benutzerfreundlich.
+> 🤖 Intelligent personnel planning assistant with natural language processing and privacy-first local AI
 
----
-
-## Inhaltsverzeichnis
-
-1. [Beschreibung](#beschreibung)
-2. [Funktionen](#funktionen)
-3. [Nicht-funktionale-Anforderungen](#nicht-funktionale-anforderungen)
-4. [Aktueller Stand](#aktueller-Stand)
-5. [Systemanforderungen](#systemanforderungen)
-6. [Externe-Schnittstellen](#externe-schnittstellen)
-7. [Qualitätsanforderungen](#qualitätsanforderungen)
-8. [Technologiestack](#technologiestack)
-9. [Installation](#installation)
-10. [Verwendung](#verwendung)
-11. [API-Endpunkte & Beispielanfragen](#api-endpunkte--beispielanfragen) 
-12. [Verwertungsplan](#verwertungsplan)
-13. [Lizenz](#lizenz)
-14. [Kontakt](#kontakt)
+An intelligent staff scheduling system that combines the power of local AI (TinyLlama) with an intuitive chat interface and interactive calendar. Built with privacy in mind - all data stays on your machine.
 
 ---
 
-## Beschreibung
+## 📖 About This Project
 
-Dieses System ermöglicht die intuitive Personaleinsatzplanung über eine Chat-Oberfläche, die mit einem lokal betriebenen KI-Agenten verbunden ist. Über natürliche Spracheingaben können Nutzer:innen Verfügbarkeiten verwalten und Einsatzwünsche direkt übermitteln. Die KI interpretiert diese Eingaben mithilfe von Regex und generiert daraus Kalendereinträge.
+Developed as a client project for **BSS GmbH** during the Summer Semester 2025 Software Engineering course, this AI-powered scheduling system addresses real-world staff planning challenges in small to medium businesses. The project demonstrates practical application of local LLM technology for natural language workforce management, combining modern web technologies with privacy-conscious AI to create an accessible solution for non-technical users.
 
-Das Backend basiert auf FastAPI und stellt über eine REST-API verschiedene Funktionen bereit, wie das Eintragen, Abrufen und Verwalten von Planungsinformationen. Die Datenhaltung erfolgt lokal in einer SQLite-Datenbank – vollständig ohne Cloud-Anbindung, um Datenschutz zu gewährleisten.
-
-***Hauptmerkmale:***
-- *Chatbasierte Einsatzplanung mit lokalem KI-Agenten (TinyLlama)*
-- *Verfügbarkeits- und Einsatzverwaltung über eine grafische Kalenderoberfläche*
-- *Speicherung und Abruf des Chatverlaufs*
-- *Lokaler, datenschutzkonformer Betrieb*
-- *Modularer Aufbau mit klarer Trennung von Frontend, Backend, Datenbank und KI*
-
-**Hintergrund zur Entwicklung :**  
-Ursprünglich war geplant, einen externen Kundenkalender über eine API anzubinden. Da jedoch keine realen Daten bereitgestellt wurden, wurde eine eigene Kalenderlösung implementiert. Diese Lösung ermöglicht es, Verfügbarkeiten direkt per Klick im Kalender zu setzen und per Texteingabe neue Einsätze zu planen.
-
-- Beispielhafte Eingabe:
-
-„Plane mir Gürhan am Dienstag ein“
-
-- Ergebnis:
-
-Die KI erkennt den Namen, das Datum und erstellt automatisch den passenden Kalendereintrag, sofern der Server aktiv ist.
+**Team:** Koutaibe Alhassan, Gürhan Arabaci, Ayham Salha
 
 ---
 
-## Funktionen
+## ✨ Highlights
 
-1. **Chatbasierte Einsatzplanung**  
-Einfache Planung direkt über eine Chat-Oberfläche.
-
-
-2. **KI-Interpretation**  
-Planung per natürlicher Sprache durch Regex + LLM.
-
-3. **Interaktiver Kalender**  
-Darstellung & Bearbeitung von Einträgen.
-
-4. **Verfügbarkeitsverwaltung**  
-Manuelle Auswahl verfügbarer Tage für Mitarbeitende.
-
-5. **Chatverlauf**   
-Speicherung von Anfragen & Antworten.
-
-6. **Fehlermeldungen**  
-Anzeige bei Serverfehlern oder Kommunikationsproblemen.
-
-7. **Lokaler Betrieb**  
-Alle Daten bleiben auf dem lokalen System.
+- 🤖 **Local AI Processing** - TinyLlama for natural language understanding (no cloud required)
+- 💬 **Chat-Based Interface** - Schedule staff with simple commands like "Schedule Ayham on Tuesday"
+- 📊 **Interactive Calendar** - Visual planning with drag-and-drop functionality
+- 🔒 **Privacy-First** - Complete local operation, no data leaves your system
+- 🚀 **Modern Stack** - FastAPI backend, responsive frontend
+- 🐳 **Docker Ready** - One-command deployment with Docker Compose
+- 🧪 **Well-Tested** - Comprehensive unit tests with pytest
 
 ---
 
-## Nicht-funktionale Anforderungen
-**Datenschutz:** Keine Cloud-Anbindung – alle Daten verbleiben lokal
+## 🚀 Quick Start
 
-**Modularität:** Saubere Trennung von Frontend, Backend, Datenbank und KI-Anbindung
+### Option 1: Docker (Recommended)
 
-**Kompatibilität:** Austauschbare KI-Modelle (z. B. TinyLlama) über REST-API integrierbar
+```bash
+# Clone the repository
+git clone <your-repo-url>
+cd team-14-personaleinsatzplanung-bss
 
-**Erweiterbarkeit:** Zukunftsfähig für Zusatzfunktionen
+# Start with Docker Compose
+docker-compose up -d
 
-**Plattformunabhängigkeit:** Lokaler Betrieb unter Windows, macOS und Linux möglich
+# Access the application
+# Frontend: http://localhost
+# API: http://localhost:8000
+# API Docs: http://localhost:8000/docs
+```
 
-**Installierbarkeit:** Keine spezielle Infrastruktur nötig – läuft mit Standard-Tools lokal
+### Option 2: Manual Setup
+
+```bash
+# Clone and navigate
+git clone <your-repo-url>
+cd team-14-personaleinsatzplanung-bss
+
+# Create virtual environment
+python -m venv .venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Copy environment file
+cp .env.example .env
+
+# Start the server
+uvicorn backend.main:app --reload
+
+# Access the application
+# Open http://localhost:8000 in your browser
+```
 
 ---
 
-## Aktueller Stand
+## 📖 Table of Contents
 
-Der KI-Agent reagiert nur auf konkrete Planungsanfragen und schlägt keine Mitarbeitenden proaktiv vor.
-
-Eingaben wie „Plane mir Ayham am Dienstag ein“ führen zur Erstellung eines Eintrags im Kalender (wenn Server aktiv).
-
-Wenn der Server nicht läuft, wird im Chat eine entsprechende Warnung angezeigt („Der Server ist aktuell nicht erreichbar“).
-
-Verfügbarkeiten können zusätzlich direkt im Kalender gesetzt werden.
-
-Der Kalender zeigt visuell, wer wann verfügbar ist und welche Einträge über die KI geplant wurden.
+- [Features](#-features)
+- [Architecture](#-architecture)
+- [Technology Stack](#-technology-stack)
+- [Installation](#-installation)
+- [Usage](#-usage)
+- [API Documentation](#-api-documentation)
+- [Development](#-development)
+- [Testing](#-testing)
+- [Deployment](#-deployment)
+- [Contributing](#-contributing)
+- [License](#-license)
 
 ---
 
-## Systemanforderungen
+## 🎯 Features
 
-*Betriebssystem:*
+### Core Functionality
+- ✅ **Natural Language Planning** - "Schedule Mustafa on Monday" → Automatic calendar entry
+- ✅ **Chat History** - Complete conversation tracking and retrieval
+- ✅ **Availability Management** - Click-to-set availability in calendar
+- ✅ **Interactive Calendar** - Visual representation of schedules and availability
+- ✅ **Error Handling** - Graceful degradation with user-friendly messages
+- ✅ **Health Monitoring** - Built-in health check endpoints
 
-- Windows, macOS, Linux
+### Technical Features
+- ✅ **RESTful API** - Clean, documented API with OpenAPI/Swagger
+- ✅ **Environment Configuration** - Flexible config via environment variables
+- ✅ **Logging** - Comprehensive application logging
+- ✅ **Docker Support** - Full containerization with Docker Compose
+- ✅ **CI/CD Ready** - GitHub Actions workflow included
+- ✅ **Code Quality** - Linting and formatting with Black & Pylint
 
-*Software:*
+---
 
-- Python 3.10 oder höher
-- SQLite (lokal)
+## 🏗 Architecture
+
+```
+┌─────────────────┐     HTTP/REST      ┌──────────────────┐
+│                 │ ◄─────────────────► │                  │
+│   Frontend      │                     │   FastAPI        │
+│   (HTML/CSS/JS) │                     │   Backend        │
+│                 │                     │                  │
+└─────────────────┘                     └────────┬─────────┘
+                                                 │
+                                                 │
+                                        ┌────────▼─────────┐
+                                        │                  │
+                                        │   TinyLlama      │
+                                        │   LLM Model      │
+                                        │                  │
+                                        └────────┬─────────┘
+                                                 │
+                                        ┌────────▼─────────┐
+                                        │                  │
+                                        │   SQLite         │
+                                        │   Database       │
+                                        │                  │
+                                        └──────────────────┘
+```
+
+### Components
+
+- **Frontend**: Vanilla JavaScript with interactive calendar and chat UI
+- **Backend**: FastAPI Python server with async endpoints
+- **AI Layer**: TinyLlama 1.1B for natural language processing
+- **Database**: SQLite for local data persistence
+- **Deployment**: Docker containers with Nginx reverse proxy
+
+---
+
+## 🛠 Technology Stack
+
+**Backend**
+- [FastAPI](https://fastapi.tiangolo.com/) - Modern Python web framework
+- [Uvicorn](https://www.uvicorn.org/) - ASGI server
+- [PyTorch](https://pytorch.org/) - Deep learning framework
+- [Transformers](https://huggingface.co/transformers/) - HuggingFace library
+- [SQLite](https://www.sqlite.org/) - Embedded database
+
+**Frontend**
+- HTML5, CSS3, JavaScript (ES6+)
+- Fetch API for HTTP requests
+- Responsive design
+
+**AI/ML**
+- [TinyLlama-1.1B-Chat](https://huggingface.co/TinyLlama/TinyLlama-1.1B-Chat-v1.0) - Local language model
+- Regex-based command parsing
+- Natural language understanding
+
+**DevOps**
+- Docker & Docker Compose
+- GitHub Actions (CI/CD)
+- Nginx (Production proxy)
+
+---
+
+## 📦 Installation
+
+### Prerequisites
+
+- Python 3.10 or higher
 - Git
-- Lokales LLM (TinyLlama)
+- Docker (optional, for containerized deployment)
 
-*Abhängigkeiten:*
-- uvicorn, fastapi, torch, transformers, accelerate
+### Detailed Setup
+
+1. **Clone the repository**
+   ```bash
+   git clone <your-repo-url>
+   cd team-14-personaleinsatzplanung-bss
+   ```
+
+2. **Set up Python environment**
+   ```bash
+   # Create virtual environment
+   python -m venv .venv
+   
+   # Activate it
+   # Windows:
+   .venv\Scripts\activate
+   # Unix/Mac:
+   source .venv/bin/activate
+   ```
+
+3. **Install dependencies**
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. **Configure environment**
+   ```bash
+   # Copy example environment file
+   cp .env.example .env
+   
+   # Edit .env with your settings (optional)
+   ```
+
+5. **Run the application**
+   ```bash
+   # Start the backend server
+   uvicorn backend.main:app --reload
+   
+   # The server will start at http://localhost:8000
+   # API documentation at http://localhost:8000/docs
+   ```
+
+6. **Access the application**
+   - Open http://localhost:8000 in your web browser
+   - The server automatically serves the frontend
 
 ---
 
-## Externe Schnittstellen
-- **Webbrowser (Benutzerschnittstelle)**
+## 💻 Usage
 
-- **REST-API (FastAPI)** JSON-basierte Schnittstelle
+### Chat Interface
 
-- **POST /chat** – Nutzeranfrage senden
+1. Click the chat toggle button to open the chat interface
+2. Type natural language commands:
+   - `"Schedule Ayham on Tuesday"` - Schedule Ayham on Tuesday
+   - `"Schedule Mustafa on Monday"` - Schedule Mustafa on Monday
+   - `"Plane mir Sarah am Freitag ein"` - Schedule Sarah on Friday (German)
+3. The AI processes your request and creates a calendar entry
+4. View the entry in the interactive calendar
 
-- **GET /history** – Chatverlauf abrufen
+### Calendar Management
 
-- **Datenbank:** Speicherung von Anfragen, Antworten, Nutzerdaten
+- **View Schedule**: See all scheduled entries in the current month's calendar
+- **Set Availability**: Click on calendar days to add entries manually
+- **Edit Entries**: Click on existing entries to modify them
+- **Visual Feedback**: Color-coded entries for different availability states
+- **Dynamic Calendar**: Automatically shows the current month and year
 
-- **LLM-Modell (z. B. TinyLlama):** Zugriff über lokale API
----
+### API Usage
 
-## Qualitätsanforderungen
+Access the interactive API documentation at `http://localhost:8000/docs`
 
-• **Zuverlässigkeit**:  
-Stabiler Chatbot mit Fehlerbehandlung bei leeren oder fehlerhaften Antworten.  
-• **Antwortgeschwindigkeit**:  
- < 1 Sekunde Reaktionszeit bei Einzelanfragen unter realistischen Bedingungen.  
-• **Benutzerfreundlichkeit**:  
-Intuitive Oberfläche mit strukturiertem Kalender, direkter Eingabe und Chatverlauf.  
-• **Wartbarkeit**:   
-Modularer, gut kommentierter Code mit Git-Versionskontrolle für einfache Erweiterung.
+**Example API Calls:**
 
----
+```bash
+# Health check
+curl http://localhost:8000/health
 
-## Technologiestack
+# Send chat message
+curl -X POST http://localhost:8000/chat \
+  -H "Content-Type: application/json" \
+  -d '{"benutzer": "User", "nachricht": "Plane mir Ayham am Dienstag ein"}'
 
-• **Frontend**: HTML, CSS, JavaScript + Fetch API  
-• **Backend/API**: FastAPI in Python  
-• **LLM-Anbindung**: Lokal installiertes LLM (TinyLlama)  
-• **Datenbank**: SQLite (lokal)  
-• **Kommunikation**: REST-API  
-• **Server**: Uvicorn (lokal)    
-• **Editor**: Visual Studio Code  
-
----
-
-## Installation
-
-1. Stellen Sie sicher, dass Python (mindestens Version 3.10), Git und das lokale LLM (z. B. TinyLlama)
-installiert und betriebsbereit sind.
-
-2. Klonen Sie das Repository auf Ihren lokalen Rechner:
+# Get chat history
+curl http://localhost:8000/history?limit=10
 ```
-git clone https://gitlab.rz.htw-berlin.de/softwareentwicklungsprojekt/sose2025/team-14-personaleinsatzplanung-bss.git
-```
-3. Installieren Sie die notwendigen Python-Abhängigkeiten mit:
-
-   ```pip install -r requirements.txt```
-
-4. Starten Sie den lokalen Server:
-
-   ```uvicorn main:app --reload```
 
 ---
 
-## Verwendung
-1. Öffnen Sie einen Webbrowser und rufen Sie http://localhost:8000 auf. 
-2. Einsatzanfrage über den Chat senden:  
-Beispiel: Plane mir Koutaibe am Dienstag ein.
-3. System antwortet mit:   Koutaibe wurde am 2025-07-15 eingeplant.
-4. Eintrag erscheint im Kalender.
-5. Verfügbarkeit kann direkt über Kalender gesetzt werden
-6. Bei Serverfehlern erscheinen entsprechende Warnungen
+## 📚 API Documentation
 
----
+### Endpoints
 
-## API-Endpunkte & Beispielanfragen
-### GET /
-**Antwort**:  
-```
-{  
-  "message": "KI-Agent läuft"  
-}  
-```
-### POST /eintrag 
-Beschreibung: Speichert einen neuen Chatverlaufseintrag in der Datenbank.  
-
-**Beispielanfrage:**
+#### `GET /`
+Health check endpoint
 ```json
-{  
-  "benutzer": "Ayham",  
-  "nachricht": "plane mir Ayham am Dienstag ein",  
-  "timestamp": "2025-06-21 14:00:00"
-} 
-```
-
-**Antwort:**
-```
-{  
-  "status": "Eintrag gespeichert"  
-}
-```
-### POST /chat
-Beschreibung: Sendet eine Chat-Nachricht und erhält eine Antwort vom KI-Agenten.
-
-**Beispielanfrage:**
-
-```
-{  
-  "message": "Plane mir Gürhan am Mittwoch ein?"  
-}
-```
-**Antwort:**
-```
-{  
-  "response": "Gürhan wurde am 2025-07-16 eingeplant."  
+{
+  "message": "KI-Agent läuft",
+  "version": "1.0.0",
+  "status": "healthy"
 }
 ```
 
-### API-Dokumentation (Swagger UI):
-Die vollständige automatisch generierte API-Dokumentation ist unter http://localhost:8000/docs verfügbar.
+#### `GET /health`
+Detailed health check with database status
 
+#### `POST /chat`
+Process chat message with AI
+```json
+// Request
+{
+  "benutzer": "User",
+  "nachricht": "Plane mir Ayham am Dienstag ein"
+}
 
+// Response
+{
+  "response": "Ayham wurde am 2026-01-14 eingeplant.",
+  "eintrag": {
+    "title": "Geplant (via KI)",
+    "datum": "2026-01-14",
+    "uhrzeit": "09:00–17:00",
+    "mitarbeiter": "Ayham",
+    "verfuegbar": "Ja"
+  }
+}
+```
+
+#### `GET /history`
+Get chat history (optional `limit` parameter)
+
+Full interactive API docs available at `/docs` when running the server.
 
 ---
 
-## Verwertungsplan
-Dieses Projekt wurde im Rahmen des Moduls Softwareentwicklungsprojekt realisiert. Es dient als funktionaler Prototyp für eine mögliche spätere Integration in echte Planungssysteme. Die verwendete modulare Architektur erlaubt es, das System flexibel zu erweitern (z. B. automatische Vorschläge, externe Kalendersysteme, Reporting-Funktionen).
+## 🔧 Development
+
+### Project Structure
+
+```
+team-14-personaleinsatzplanung-bss/
+├── backend/
+│   ├── config.py              # Configuration management
+│   ├── main.py                # FastAPI application
+│   ├── llm_utils.py           # LLM integration
+│   ├── llm_command_parser.py  # Command parsing
+│   └── schemas.py             # Pydantic models
+├── frontend/
+│   ├── index.html             # Main UI
+│   ├── script.js              # Frontend logic
+│   ├── style.css              # Styling
+│   └── image/                 # Assets
+├── tests/
+│   ├── test_api.py            # API tests
+│   └── test_parser.py         # Parser tests
+├── .github/
+│   └── workflows/
+│       └── ci.yml             # CI/CD pipeline
+├── Dockerfile                 # Container definition
+├── docker-compose.yml         # Multi-container setup
+├── requirements.txt           # Python dependencies
+├── .env.example               # Environment template
+└── README.md                  # This file
+```
+
+### Code Formatting
+
+```bash
+# Format Python code with Black
+black backend/
+
+# Lint Python code
+pylint backend/
+
+# Format JavaScript/CSS
+prettier --write frontend/
+```
 
 ---
 
-## Lizenz
+## 🧪 Testing
 
-Dieses Projekt steht unter der MIT-Lizenz. Weitere Informationen finden Sie in der Datei `Lizenz`
+```bash
+# Run all tests
+pytest
+
+# Run with coverage
+pytest --cov=backend tests/
+
+# Run specific test file
+pytest tests/test_api.py -v
+
+# Run tests in Docker
+docker-compose run backend pytest
+```
 
 ---
 
-## Kontakt
-Bei Fragen oder Anmerkungen wenden Sie sich bitte an:
+## 🚢 Deployment
 
-- Ayham.Salha@Student.HTW-Berlin.de;
-- Guerhan.Arabaci@Student.HTW-Berlin.de;
-- Koutaibe.Alhassan@Student.HTW-Berlin.de.
+### Docker Deployment
+
+```bash
+# Build and start services
+docker-compose up -d
+
+# View logs
+docker-compose logs -f
+
+# Stop services
+docker-compose down
+
+# Rebuild after changes
+docker-compose up -d --build
+```
+
+### Production Considerations
+
+- Set `DEBUG=False` in `.env`
+- Configure proper CORS origins
+- Use a reverse proxy (Nginx included in docker-compose)
+- Set up SSL/TLS certificates
+- Configure proper logging and monitoring
+- Backup SQLite database regularly
 
 ---
+
+## 🤝 Contributing
+
+We welcome contributions! Please see [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md) for details.
+
+### Quick Contribution Guide
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Make your changes
+4. Run tests and formatting
+5. Commit your changes (`git commit -m 'Add amazing feature'`)
+6. Push to the branch (`git push origin feature/amazing-feature`)
+7. Open a Pull Request
+
+---
+
+## 📝 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+## 👥 Team
+
+- Ayham Salha - [Ayham.Salha@Student.HTW-Berlin.de](mailto:Ayham.Salha@Student.HTW-Berlin.de)
+- Gürhan Arabaci - [Guerhan.Arabaci@Student.HTW-Berlin.de](mailto:Guerhan.Arabaci@Student.HTW-Berlin.de)
+- Koutaibe Alhassan - [Koutaibe.Alhassan@Student.HTW-Berlin.de](mailto:Koutaibe.Alhassan@Student.HTW-Berlin.de)
+
+---
+
+## 🙏 Acknowledgments
+
+- Developed as part of Software Development Project course
+- TinyLlama model by HuggingFace
+- FastAPI framework team
+- HTW Berlin
+
+---
+
+## 📈 Roadmap
+
+- [ ] User authentication & authorization
+- [ ] Multi-tenant support
+- [ ] Email notifications
+- [ ] Calendar export (PDF/ICS)
+- [ ] Mobile app (PWA)
+- [ ] Advanced AI features (conflict detection, recommendations)
+- [ ] Integration with external calendars (Google, Outlook)
+
+---
+
+**Made with ❤️ at HTW Berlin**

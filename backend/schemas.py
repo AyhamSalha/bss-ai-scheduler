@@ -1,9 +1,15 @@
+"""Data models for the application."""
 from pydantic import BaseModel, Field
 from typing import Optional
 
-# Modell für einen Chat-Eintrag – wird im Endpunkt /eintrag verwendet
-class ChatEintrag(BaseModel):
-    id: Optional[int] = None  # optional, wird von der Datenbank gesetzt
-    benutzer: str = Field(..., min_length=1, description="Benutzer darf nicht leer sein")
-    nachricht: str = Field(..., min_length=1, description="Nachricht darf nicht leer sein")
-    timestamp: Optional[str] = None  # darf leer bleiben
+
+class ChatEntry(BaseModel):
+    """Model for a chat entry - used in the /eintrag endpoint."""
+    id: Optional[int] = None  # Optional, set by database
+    benutzer: str = Field(..., min_length=1, description="Username cannot be empty")
+    nachricht: str = Field(..., min_length=1, description="Message cannot be empty")
+    timestamp: Optional[str] = None  # Can be empty
+
+
+# Keep old name for backward compatibility
+ChatEintrag = ChatEntry

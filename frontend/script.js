@@ -1,4 +1,4 @@
-//Funktion zum Umschalten der Sichtbarkeit des Chatfensters
+// Function to toggle chat window visibility
 function toggleChat() {
   const chatbox = document.getElementById("chatbox");
   chatbox.style.display = chatbox.style.display === "flex" ? "none" : "flex"; 
@@ -9,7 +9,7 @@ window.onload = () => {
   const input = document.querySelector(".chat-footer input");
   const button = document.querySelector(".chat-footer button");
 
-  //Event-Listener für den Chat-Button
+  // Event listener for chat button
   button.addEventListener("click", async () => {
     const text = input.value.trim();
     if (text !== "") {
@@ -17,14 +17,14 @@ window.onload = () => {
       input.value = "";
 
       try {
-        //Anfrage an das Backend senden
+        // Send request to backend
         const response = await fetch("http://localhost:8000/chat", {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
           },
           body: JSON.stringify({
-            benutzer: "Nutzer",
+            benutzer: "User",
             nachricht: text
           })
         });
@@ -32,37 +32,37 @@ window.onload = () => {
         if (response.ok) {
           const data = await response.json();
 
-          //Neue robuste Prüfung:
+          // Robust response check
           if (typeof data.response === "string") {
-            const antwort = formatAntwort(data.response);
-            appendMessage("ki", antwort);
+            const answer = formatAnswer(data.response);
+            appendMessage("ki", answer);  // Keep "ki" for CSS compatibility
           } else {
-            console.warn("Unerwartetes Format von data.response:", data.response);
-            appendMessage("ki", "⚠️ Die Antwort vom Server war leer oder ungültig.");
+            console.warn("Unexpected format from data.response:", data.response);
+            appendMessage("ki", "⚠️ The server response was empty or invalid.");
           }
 
-          //Kalender-Eintrag übernehmen (optional)
+          // Add calendar entry (optional)
           if (data.eintrag) {
             const d = data.eintrag.datum;
-            if (!eintraege[d]) eintraege[d] = [];
-            eintraege[d].push(data.eintrag);
-            erzeugeKalender();
+            if (!entries[d]) entries[d] = [];
+            entries[d].push(data.eintrag);
+            generateCalendar();
           }
         }
-        //Wenn die Antwort nicht erfolgreich war, eine Fehlermeldung anzeigen
+        // If response was not successful, show error message
         else {
-          appendMessage("ki", "⚠️ Fehler beim Abrufen der Antwort vom Server.");
+          appendMessage("ki", "⚠️ Error retrieving response from server.");
         }
       }
-      //Fehlerbehandlung
+      // Error handling
       catch (error) {
-        appendMessage("ki", "⚠️ Der Server ist aktuell nicht erreichbar.");
-        console.error("Backend-Fehler:", error);
+        appendMessage("ki", "⚠️ The server is currently unreachable.");
+        console.error("Backend error:", error);
       }
     }
   });
 
-  //Beim Drücken der Enter-Taste die Nachricht senden
+  // Send message when Enter key is pressed
   input.addEventListener("keypress", (e) => {
     if (e.key === "Enter") {
       e.preventDefault();
@@ -71,39 +71,44 @@ window.onload = () => {
   });
 };
 
-//Funktion zum Anhängen einer Nachricht an den Chat
+// Function to append a message to the chat
 function appendMessage(sender, text) {
   const msgBox = document.getElementById("chat-messages");
   const msg = document.createElement("div");
   msg.classList.add("chat-message", sender);
 
-  //Aktuelle Uhrzeit im Format "HH:MM" (24-Stunden-Format)
-  const time = new Date().toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" });
+  // Current time in "HH:MM" format (24-hour)
+  const time = new Date().toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: false });
 
   msg.innerHTML = `<div>${text}</div><div class="timestamp">${time}</div>`;
   msgBox.appendChild(msg);
   msgBox.scrollTop = msgBox.scrollHeight;
 }
 
-//Hilfsfunktion zum Formatieren der Antwort
-function formatAntwort(text) {
+// Helper function to format the answer
+function formatAnswer(text) {
   return text.replace(/\n/g, "<br>");
 }
 
+// Keep old function name for compatibility
+const formatAntwort = formatAnswer;
+
 // -------------------------------------------------------------------------------------------------------------------------
-//Kalender-Interaktion
-const eintraege = {};
+// Calendar interaction
+const entries = {};
+const eintraege = entries; // Keep German name for compatibility
 let selectedDate = "";
 
 const form = document.getElementById("eintragForm");
 const overlay = document.getElementById("overlay");
 
-document.querySelector(".close-btn").addEventListener("click", schliessenForm);
-document.getElementById("cancelBtn").addEventListener("click", schliessenForm);
+document.querySelector(".close-btn").addEventListener("click", closeForm);
+document.getElementById("cancelBtn").addEventListener("click", closeForm);
+overlay.addEventListener("click", closeForm);
 
 window.addEventListener("keydown", e => {
   if (e.key === "Escape" && form.classList.contains("active")) {
-    schliessenForm();
+    closeForm();
   }
 });
 
@@ -132,47 +137,62 @@ function fillTimeSelects() {
 
 fillTimeSelects();
 
-function erzeugeKalender() {
+function generateCalendar() {
   const tbody = document.getElementById("calendarBody");
   tbody.innerHTML = "";
-  let tag = 1;
-  const startWochentag = 1; 
-  const tageImMonat = 31;
+  
+  // Use current month/year instead of hardcoded July 2025
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth(); // 0-indexed (0 = January)
+  
+  // Update calendar title
+  const monthNames = ["January", "February", "March", "April", "May", "June",
+                      "July", "August", "September", "October", "November", "December"];
+  document.getElementById("calendar-title").textContent = 
+    `Staff Scheduling – ${monthNames[month]} ${year}`;
+  
+  const firstDay = new Date(year, month, 1);
+  const lastDay = new Date(year, month + 1, 0);
+  const daysInMonth = lastDay.getDate();
+  const startWeekday = (firstDay.getDay() + 6) % 7; // Monday = 0
+  
+  let day = 1;
 
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < 6; i++) {
     const row = document.createElement("tr");
 
     for (let j = 0; j < 7; j++) {
       const cell = document.createElement("td");
 
-      if (i === 0 && j < startWochentag) {
+      if ((i === 0 && j < startWeekday) || day > daysInMonth) {
         cell.innerHTML = "";
-      } else if (tag <= tageImMonat) {
-        const datum = `2025-07-${String(tag).padStart(2, "0")}`;
-        cell.innerHTML = `<strong>${tag}</strong>`;
-        cell.addEventListener("click", () => öffneForm(datum));
+      } else {
+        const date = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+        cell.innerHTML = `<strong>${day}</strong>`;
+        cell.addEventListener("click", () => openForm(date));
 
-        (eintraege[datum] || []).forEach((e, index) => {
+        (entries[date] || []).forEach((e, index) => {
           const div = document.createElement("div");
           div.className = `eintrag ${e.verfuegbar === "Ja" ? "verfuegbar" : "nicht-verfuegbar"}`;
-          div.innerHTML = `${e.title}<br>${e.uhrzeit} – ${e.mitarbeiter}<br>Verfügbar: ${e.verfuegbar}`;
+          div.innerHTML = `${e.title}<br>${e.uhrzeit} – ${e.mitarbeiter}<br>Available: ${e.verfuegbar}`;
 
           const editBtn = document.createElement("button");
           editBtn.innerText = "⚙️";
-          editBtn.title = "Bearbeiten";
+          editBtn.title = "Edit";
           editBtn.onclick = (ev) => {
             ev.stopPropagation();
-            öffneForm(datum, index, e);
+            openForm(date, index, e);
           };
 
           const deleteBtn = document.createElement("button");
           deleteBtn.innerText = "✖️";
-          deleteBtn.title = "Löschen";
+          deleteBtn.title = "Delete";
           deleteBtn.style.right = "20px";
           deleteBtn.onclick = (ev) => {
             ev.stopPropagation();
-            eintraege[datum].splice(index, 1);
-            erzeugeKalender();
+            entries[date].splice(index, 1);
+            generateCalendar();
           };
 
           div.appendChild(editBtn);
@@ -180,7 +200,7 @@ function erzeugeKalender() {
           cell.appendChild(div);
         });
 
-        tag++;
+        day++;
       }
 
       row.appendChild(cell);
@@ -190,22 +210,22 @@ function erzeugeKalender() {
   }
 }
 
-function öffneForm(datum, index = null, data = null) {
-  selectedDate = datum;
-  document.getElementById("von").value = datum;
-  document.getElementById("bis").value = datum;
+function openForm(date, index = null, data = null) {
+  selectedDate = date;
+  document.getElementById("von").value = date;
+  document.getElementById("bis").value = date;
   document.getElementById("title").value = data ? data.title : "";
   document.getElementById("uhrzeit").value = data ? data.uhrzeit.split("–")[0] : "";
   document.getElementById("endzeit").value = data ? data.uhrzeit.split("–")[1] : "";
   document.getElementById("mitarbeiter").value = data ? data.mitarbeiter : "Ayham";
   document.getElementById("verfuegbar").value = data ? data.verfuegbar : "Ja";
-  document.getElementById("bearbeiteDatum").value = datum;
+  document.getElementById("bearbeiteDatum").value = date;
   document.getElementById("bearbeiteIndex").value = index !== null ? index : "";
   overlay.classList.add("active");
   form.classList.add("active");
 }
 
-function schliessenForm() {
+function closeForm() {
   overlay.classList.remove("active");
   form.classList.remove("active");
   form.reset();
@@ -213,10 +233,15 @@ function schliessenForm() {
   document.getElementById("bearbeiteDatum").value = "";
 }
 
+// Keep German function names for compatibility
+const öffneForm = openForm;
+const schliessenForm = closeForm;
+const erzeugeKalender = generateCalendar;
+
 form.addEventListener("submit", (event) => {
   event.preventDefault();
 
-  const datum = document.getElementById("bearbeiteDatum").value || selectedDate;
+  const date = document.getElementById("bearbeiteDatum").value || selectedDate;
   const index = document.getElementById("bearbeiteIndex").value;
   const title = document.getElementById("title").value.trim();
   const uhrzeit = document.getElementById("uhrzeit").value;
@@ -227,21 +252,21 @@ form.addEventListener("submit", (event) => {
   const verfuegbar = document.getElementById("verfuegbar").value;
 
   const start = new Date(von);
-  const ende = new Date(bis);
+  const end = new Date(bis);
 
-  for (let d = new Date(start); d <= ende; d.setDate(d.getDate() + 1)) {
+  for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
     const dat = d.toISOString().split("T")[0];
-    if (!eintraege[dat]) eintraege[dat] = [];
+    if (!entries[dat]) entries[dat] = [];
 
-    if (dat === datum && index !== "") {
-      eintraege[dat][index] = {
+    if (dat === date && index !== "") {
+      entries[dat][index] = {
         title,
         uhrzeit: `${uhrzeit}–${endzeit}`,
         mitarbeiter,
         verfuegbar
       };
     } else {
-      eintraege[dat].push({
+      entries[dat].push({
         title,
         uhrzeit: `${uhrzeit}–${endzeit}`,
         mitarbeiter,
@@ -250,10 +275,11 @@ form.addEventListener("submit", (event) => {
     }
   }
 
-  schliessenForm();
-  erzeugeKalender();
+  closeForm();
+  generateCalendar();
 });
 
-erzeugeKalender();
+generateCalendar();
 
-//Ende of script.js
+// End of script.js
+

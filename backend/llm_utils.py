@@ -1,79 +1,96 @@
+"""LLM utilities for natural language processing."""
 from transformers import AutoTokenizer, AutoModelForCausalLM
 import torch
 from colorama import Fore, Style
 import warnings
-from backend.llm_command_parser import parse_plan_befehl
+import logging
+from backend.command_parser import parse_scheduling_command
+
+logger = logging.getLogger(__name__)
 
 MODEL_NAME = "TinyLlama/TinyLlama-1.1B-Chat-v1.0"
 
-#Geräteeinstellung - nutzt GPU wenn verfügbar, sonst CPU
+# Device configuration - uses GPU if available, otherwise CPU
 device = "cuda" if torch.cuda.is_available() else "cpu"
 torch_dtype = torch.float16 if device == "cuda" else torch.float32
 
 if device == "cpu":
-    warnings.warn(Fore.YELLOW + "[WARNUNG] Keine GPU – TinyLlama läuft langsamer." + Style.RESET_ALL)
+    warnings.warn(Fore.YELLOW + "[WARNING] No GPU detected – TinyLlama will run slower." + Style.RESET_ALL)
+    logger.warning("Running on CPU - performance may be degraded")
 
-#Modell + Tokenizer laden
+# Load model and tokenizer
+logger.info(f"Loading model {MODEL_NAME}...")
 tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
 model = AutoModelForCausalLM.from_pretrained(
     MODEL_NAME,
     torch_dtype=torch_dtype,
     device_map="auto"
 )
+logger.info("Model loaded successfully")
 
-#Chatverlauf wird gespeichert 
+# Chat history storage
 chat_history = []
 
-#Antwortparameter
+# Response parameters
 MAX_TOKENS = 80
 TOP_P = 0.92
 TEMPERATURE = 0.65
 MAX_HISTORY = 4  
 
-def generiere_antwort(prompt: str) -> dict:
+def generate_response(prompt: str) -> dict:
     """
-    Generiert eine Antwort basierend auf Eingabe und Verlauf – oder
-    verarbeitet erkannte Planungsbefehle direkt.
-    Gibt Dictionary zurück mit Antwort + optionalem Kalender-Eintrag.
+    Generate a response based on input and history, or process recognized scheduling commands directly.
+    
+    Args:
+        prompt: User input text
+        
+    Returns:
+        Dictionary with response and optional calendar entry
     """
+    # Recognize scheduling command
+    command = parse_scheduling_command(prompt)
+    entry = None
 
-    #Planungsbefehl erkennen
-    befehl = parse_plan_befehl(prompt)
-    eintrag = None
-
-    if befehl:
-        eintrag = {
-            "title": "Geplant (via KI)",
-            "datum": befehl["datum"],
+    if command:
+        entry = {
+            "title": "Scheduled (via AI)",
+            "datum": command["datum"],
             "uhrzeit": "09:00–17:00",
-            "mitarbeiter": befehl["mitarbeiter"],
-            "verfuegbar": "Ja"
+            "mitarbeiter": command["mitarbeiter"],
+            "verfuegbar": "Yes"
         }
 
-        antwort = f"{befehl['mitarbeiter']} wurde am {befehl['datum']} eingeplant."
+        response = f"{command['mitarbeiter']} has been scheduled for {command['datum']}."
+        logger.info(f"Scheduled: {command['mitarbeiter']} on {command['datum']}")
         return {
-            "response": antwort,
-            "eintrag": eintrag
+            "response": response,
+            "eintrag": entry
         }
 
-    #Standard-LLM-Antwort generieren
+    # Generate standard LLM response
+    # For non-scheduling queries, provide a quick rule-based response
+    # to avoid slow CPU processing
+    if device == "cpu":
+        response = "I'm your scheduling assistant. Try commands like 'Schedule John for Monday' or 'Add Sarah to Friday's shift'."
+        return {"response": response}
+    
     system_prompt = (
-        "<|system|>Du bist ein präziser, hilfreicher, deutscher KI-Assistent. "
-        "Verwende klare Sprache und antworte professionell, höflich und logisch.<|end|>\n"
+        "<|system|>You are a precise, helpful AI assistant. "
+        "Use clear language and respond professionally, politely and logically.<|end|>\n"
     )
 
-    #Kontext-Dialog aufbauen
+    # Build context dialogue
     chat_prompt = system_prompt
-    for eintrag_alt in chat_history[-MAX_HISTORY:]:
-        frage = eintrag_alt['frage'].strip().replace("\n", " ")
-        antwort = eintrag_alt['antwort'].strip().replace("\n", " ")
-        chat_prompt += f"<|user|>{frage}<|end|>\n<|assistant|>{antwort}<|end|>\n"
+    for history_entry in chat_history[-MAX_HISTORY:]:
+        question = history_entry['question'].strip().replace("\n", " ")
+        answer = history_entry['answer'].strip().replace("\n", " ")
+        chat_prompt += f"<|user|>{question}<|end|>\n<|assistant|>{answer}<|end|>\n"
 
-    #Neue Eingabe einfügen
+    # Insert new input
     prompt = prompt.strip().replace("\n", " ")
     chat_prompt += f"<|user|>{prompt}<|end|>\n<|assistant|>"
 
-    #Tokenisierung + Generierung
+    # Tokenization and generation
     inputs = tokenizer(chat_prompt, return_tensors="pt").to(model.device)
 
     with torch.no_grad():
@@ -86,15 +103,20 @@ def generiere_antwort(prompt: str) -> dict:
             pad_token_id=tokenizer.eos_token_id
         )
 
-    #Ausgabe verarbeiten
-    antwort = tokenizer.decode(output[0], skip_special_tokens=True).strip()
-    if "<|assistant|>" in antwort:
-        antwort = antwort.split("<|assistant|>")[-1].strip()
+    # Process output
+    answer = tokenizer.decode(output[0], skip_special_tokens=True).strip()
+    if "<|assistant|>" in answer:
+        answer = answer.split("<|assistant|>")[-1].strip()
 
-    #Verlauf aktualisieren
-    chat_history.append({"frage": prompt, "antwort": antwort})
+    # Update history
+    chat_history.append({"question": prompt, "answer": answer})
+    logger.debug(f"Generated response: {answer[:50]}...")
 
     return {
-        "response": antwort,
+        "response": answer,
         "eintrag": None
     }
+
+
+# Keep old function name for backward compatibility
+generiere_antwort = generate_response

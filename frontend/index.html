@@ -1,49 +1,49 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>BSS KI-Agent</title>
-  <link rel="stylesheet" href="style.css" />
+  <title>BSS AI Agent - Staff Scheduling</title>
+  <link rel="stylesheet" href="/static/style.css" />
 </head>
 <body>
 
 <!-- Chat Toggle Button -->
 <div class="chat-toggle" onclick="toggleChat()">
-  <img src="image/Chat-Toggle-Icon.png" alt="Open Chat">
+  <img src="/static/image/Chat-Toggle-Icon.png" alt="Open Chat">
 </div>
 
 
 <!-- Chatbox -->
 <div class="chatbox" id="chatbox">
-  <div class="chat-header">BSS KI-Agent</div>
+  <div class="chat-header">BSS AI Agent</div>
   <div class="chat-messages" id="chat-messages">
-    <div>KI-Agent: Wie kann ich Sie assistieren?</div>
+    <div>AI Agent: How can I assist you?</div>
   </div>
 
   <!-- Chat Footer -->
   <div class="chat-footer">
-    <input type="text" placeholder="Nachricht eingeben..." />
-    <button>➤</button>
+    <input type="text" placeholder="Enter message..." />
+    <button>➞</button>
   </div>
 </div>
-<!-- Ende der Chatbox -->
+<!-- End of Chatbox -->
 
 <!-- ------------------------------------------------------------------------------------------------ -->
 
-<!-- Kalender-Container -->
+<!-- Calendar Container -->
 <div class="calendar-container">
-  <h2>Prototyp für Personaleinsatzplanung – Juli 2025</h2>
+  <h2 id="calendar-title">Staff Scheduling</h2>
   <table id="kalender">
     <thead>
       <tr>
-        <th>Mo</th>
-        <th>Di</th>
-        <th>Mi</th>
-        <th>Do</th>
-        <th>Fr</th>
-        <th>Sa</th>
-        <th>So</th>
+        <th>Mon</th>
+        <th>Tue</th>
+        <th>Wed</th>
+        <th>Thu</th>
+        <th>Fri</th>
+        <th>Sat</th>
+        <th>Sun</th>
       </tr>
     </thead>
     <tbody id="calendarBody"></tbody>
@@ -54,41 +54,41 @@
 
 <form id="eintragForm" aria-modal="true" role="dialog" novalidate>
   <div class="form-header">
-    <span>Eintrag verwalten</span>
-    <button type="button" class="close-btn" aria-label="Schließen">&times;</button>
+    <span>Manage Entry</span>
+    <button type="button" class="close-btn" aria-label="Close">&times;</button>
   </div>
   <input type="hidden" id="bearbeiteDatum" />
   <input type="hidden" id="bearbeiteIndex" />
 
   <div class="form-row">
-    <label for="title">Titel</label>
+    <label for="title">Title</label>
     <input type="text" id="title" required />
   </div>
 
   <div class="form-row time-row">
     <div>
-      <label for="uhrzeit">Startzeit</label>
+      <label for="uhrzeit">Start Time</label>
       <select id="uhrzeit" required></select>
     </div>
     <div>
-      <label for="endzeit">Endzeit</label>
+      <label for="endzeit">End Time</label>
       <select id="endzeit" required></select>
     </div>
   </div>
 
   <div class="form-row date-row">
     <div>
-      <label for="von">Von</label>
+      <label for="von">From</label>
       <input type="date" id="von" required min="2025-07-01" max="2025-07-31" />
     </div>
     <div>
-      <label for="bis">Bis</label>
+      <label for="bis">To</label>
       <input type="date" id="bis" required min="2025-07-01" max="2025-07-31" />
     </div>
   </div>
 
   <div class="form-row">
-    <label for="mitarbeiter">Mitarbeiter</label>
+    <label for="mitarbeiter">Employee</label>
     <select id="mitarbeiter">
       <option>Ayham</option>
       <option>Gürhan</option>
@@ -99,21 +99,21 @@
   </div>
 
   <div class="form-row">
-    <label for="verfuegbar">Verfügbarkeit</label>
+    <label for="verfuegbar">Availability</label>
     <select id="verfuegbar">
-      <option value="Ja">Verfügbar</option>
-      <option value="Nein">Nicht verfügbar</option>
+      <option value="Ja">Available</option>
+      <option value="Nein">Not Available</option>
     </select>
   </div>
 
   <div class="form-buttons">
-    <button type="submit">Speichern</button>
-    <button type="button" id="cancelBtn">Abbrechen</button>
+    <button type="submit">Save</button>
+    <button type="button" id="cancelBtn">Cancel</button>
   </div>
 </form>
-<!-- Aufrufen von JavaScript -->
-<script src="script.js"></script>
+<!-- Load JavaScript -->
+<script src="/static/script.js"></script>
 </body>
 </html>
 
-<!-- Ende des HTML-Dokuments -->
+<!-- End of HTML document -->
