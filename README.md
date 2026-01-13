@@ -321,7 +321,7 @@ Full interactive API docs available at `/docs` when running the server.
 ### Project Structure
 
 ```
-team-14-personaleinsatzplanung-bss/
+bss-ai-scheduler/
 ├── backend/
 │   ├── config.py              # Configuration management
 │   ├── main.py                # FastAPI application

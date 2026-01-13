@@ -1,4 +1,4 @@
-# Contributing to BSS KI-Agent
+# Contributing to BSS KI-Agent (bss ai scheduler)
 
 Thank you for considering contributing to the BSS KI-Agent project! This document provides guidelines for contributing.
 

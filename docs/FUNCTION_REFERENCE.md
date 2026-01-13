@@ -40,5 +40,3 @@ Both languages supported:
 - "Plane mir Ayham am Montag ein"
 - "Plane mir Mustafa am Dienstag ein"
 - "Plane mir Koutaibe am Freitag ein"
-
-All work with the new parser! ✅
